@@ -1,0 +1,125 @@
+import React, { useEffect, useRef } from 'react';
+import { format, isSameMinute, startOfDay } from 'date-fns';
+import { cn } from './Calendar';
+import type { CalendarEvent } from '../types';
+
+interface EventDetailModalProps {
+    event: CalendarEvent;
+    onClose: () => void;
+    renderEvent?: (event: CalendarEvent) => React.ReactNode;
+}
+
+function eventTypeStyle(type?: string) {
+    if (type === 'maintenance') {
+        return {
+            pill: 'bg-rose-100 text-rose-700 border-rose-200',
+            dot: 'bg-rose-500',
+            label: 'Maintenance',
+        };
+    }
+    if (type === 'rental') {
+        return {
+            pill: 'bg-indigo-100 text-indigo-700 border-indigo-200',
+            dot: 'bg-indigo-500',
+            label: 'Rental',
+        };
+    }
+    return {
+        pill: 'bg-zinc-100 text-zinc-600 border-zinc-200',
+        dot: 'bg-zinc-400',
+        label: type ? type.charAt(0).toUpperCase() + type.slice(1) : 'Event',
+    };
+}
+
+function formatEventTime(start: Date, end: Date): string {
+    const allDay =
+        isSameMinute(start, startOfDay(start)) &&
+        isSameMinute(end, startOfDay(end));
+    if (allDay) return 'All day';
+    return `${format(start, 'h:mm a')} – ${format(end, 'h:mm a')}`;
+}
+
+export const EventDetailModal: React.FC<EventDetailModalProps> = ({
+    event,
+    onClose,
+    renderEvent,
+}) => {
+    const panelRef = useRef<HTMLDivElement>(null);
+
+    // Close on Escape
+    useEffect(() => {
+        const handler = (e: KeyboardEvent) => {
+            if (e.key === 'Escape') onClose();
+        };
+        window.addEventListener('keydown', handler);
+        return () => window.removeEventListener('keydown', handler);
+    }, [onClose]);
+
+    // Trap focus inside modal on open
+    useEffect(() => {
+        panelRef.current?.focus();
+    }, []);
+
+    const style = eventTypeStyle(event.type);
+
+    return (
+        <div
+            className="fixed inset-0 z-50 flex items-center justify-center"
+            style={{ animation: 'day-modal-backdrop-in 220ms ease forwards' }}
+            onClick={onClose}
+            aria-modal="true"
+            role="dialog"
+            aria-label={`Details for ${event.title}`}
+        >
+            {/* Backdrop */}
+            <div className="absolute inset-0 bg-black/30 backdrop-blur-[2px]" />
+
+            {/* Panel */}
+            <div
+                ref={panelRef}
+                tabIndex={-1}
+                className="relative bg-white rounded-2xl shadow-2xl w-full max-w-sm mx-4 flex flex-col outline-none overflow-hidden"
+                style={{
+                    animation: 'day-modal-panel-in 260ms cubic-bezier(0.34,1.56,0.64,1) forwards',
+                }}
+                onClick={e => e.stopPropagation()}
+            >
+                {/* Header Section */}
+                <div className="px-6 pt-6 pb-4">
+                    <div className="flex items-start justify-between">
+                        <div className="flex items-center gap-2 mb-3">
+                            <div className={cn('w-2.5 h-2.5 rounded-full shrink-0', style.dot)} />
+                            <span className={cn(
+                                'text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full border shrink-0',
+                                style.pill
+                            )}>
+                                {style.label}
+                            </span>
+                        </div>
+                        <button
+                            onClick={onClose}
+                            className="w-8 h-8 flex items-center justify-center rounded-xl text-zinc-400 hover:text-zinc-700 hover:bg-zinc-100 transition-all shrink-0 -mt-2 -mr-2"
+                            aria-label="Close"
+                        >
+                            ✕
+                        </button>
+                    </div>
+
+                    {renderEvent ? renderEvent(event) : (
+                        <div>
+                            <h2 className="text-2xl font-bold text-zinc-900 leading-tight mb-1">
+                                {event.title}
+                            </h2>
+                            <p className="text-sm font-medium text-zinc-500">
+                                {format(event.start, 'EEEE, MMMM d, yyyy')}
+                            </p>
+                            <p className="text-sm text-zinc-400 mt-0.5">
+                                {formatEventTime(event.start, event.end)}
+                            </p>
+                        </div>
+                    )}
+                </div>
+            </div>
+        </div>
+    );
+};

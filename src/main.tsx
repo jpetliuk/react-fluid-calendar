@@ -75,7 +75,12 @@ const events = [
         end: new Date(currentYear, currentMonth, startDay + 3, 15, 0),
     },
 
-    // --- Thursday (Massive cluster at 2 PM) ---
+    // --- Thursday (Massive cluster + Zero Duration event) ---
+    {
+        id: 'thu-0', title: 'Lunch', type: 'maintenance',
+        start: new Date(currentYear, currentMonth, startDay + 4, 12, 0),
+        end: new Date(currentYear, currentMonth, startDay + 4, 12, 0),
+    },
     {
         id: 'thu-1', title: 'All Hands', type: 'default',
         start: new Date(currentYear, currentMonth, startDay + 4, 14, 0),
@@ -97,16 +102,31 @@ const events = [
         end: new Date(currentYear, currentMonth, startDay + 4, 15, 0),
     },
 
-    // --- Friday ---
+    // --- Friday (Overlapping Cluster Test) ---
     {
-        id: 'fri-1', title: 'Wrap up', type: 'default',
-        start: new Date(currentYear, currentMonth, startDay + 5, 16, 0),
-        end: new Date(currentYear, currentMonth, startDay + 5, 17, 0),
+        id: 'fri-1', title: 'Brainstorming', type: 'default',
+        start: new Date(currentYear, currentMonth, startDay + 5, 14, 0),
+        end: new Date(currentYear, currentMonth, startDay + 5, 15, 0),
     },
     {
-        id: 'fri-2', title: 'Happy Hour', type: 'rental',
-        start: new Date(currentYear, currentMonth, startDay + 5, 18, 0),
-        end: new Date(currentYear, currentMonth, startDay + 5, 20, 0),
+        id: 'fri-2', title: 'Quick Sync', type: 'rental',
+        start: new Date(currentYear, currentMonth, startDay + 5, 14, 15),
+        end: new Date(currentYear, currentMonth, startDay + 5, 15, 15),
+    },
+    {
+        id: 'fri-3', title: 'Check-in', type: 'maintenance',
+        start: new Date(currentYear, currentMonth, startDay + 5, 14, 30),
+        end: new Date(currentYear, currentMonth, startDay + 5, 15, 30),
+    },
+    {
+        id: 'fri-4', title: 'Coffee Break', type: 'default',
+        start: new Date(currentYear, currentMonth, startDay + 5, 14, 45),
+        end: new Date(currentYear, currentMonth, startDay + 5, 15, 45),
+    },
+    {
+        id: 'fri-5', title: 'Wrap up', type: 'rental',
+        start: new Date(currentYear, currentMonth, startDay + 5, 15, 0),
+        end: new Date(currentYear, currentMonth, startDay + 5, 16, 0),
     },
 ];
 
@@ -115,15 +135,15 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         <div className="min-h-screen w-full px-8 py-4 bg-zinc-100 flex items-start justify-center">
             <FluidCalendar
                 events={events}
-                view="month"
+                view="week"
                 height={750}
                 monthlyCalendar={{
                     // dayHeight: 130,
                 }}
                 weeklyCalendar={{
-                    startHour: 0,
+                    startHour: 4,
                     endHour: 24,
-                    // dayHeight: 600,
+                    // dayHeight: 900,
                 }}
             />
         </div>

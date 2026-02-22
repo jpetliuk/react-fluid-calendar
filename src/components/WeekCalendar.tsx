@@ -4,6 +4,7 @@ import {
     format, isToday, isSameDay
 } from 'date-fns';
 import { cn } from './Calendar';
+import { EventDetailModal } from './EventDetailModal';
 import type { CalendarEvent, WeeklyCalendarSettings } from '../types';
 
 interface WeekCalendarProps {
@@ -37,6 +38,7 @@ export const WeekCalendar: React.FC<WeekCalendarProps> = ({
     const [outgoingWeekStart, setOutgoingWeekStart] = useState<Date | null>(null);
     const [hoveredCluster, setHoveredCluster] = useState<string | null>(null);
     const [flippedCluster, setFlippedCluster] = useState<string | null>(null);
+    const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
     const hoverTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
     const scrollContainerRef = useRef<HTMLDivElement>(null);
 
@@ -57,12 +59,14 @@ export const WeekCalendar: React.FC<WeekCalendarProps> = ({
 
             const dayHeight = settings?.dayHeight ?? 600;
             const topPct = (s - startHour) / totalHours;
-            const heightPct = Math.max((e - s) / totalHours, 0.5 / totalHours);
             const anchorTopPx = topPct * dayHeight;
-            const cardHeightPx = Math.max(Math.round(heightPct * dayHeight), 48);
+
+            // Constrain card height to exactly 1 hour block minus margin
+            const baseCardHeightPx = (dayHeight / totalHours) - 2;
+            const expandedCardHeightPx = Math.max(baseCardHeightPx, 48);
 
             // Total height of the expanded cluster
-            const expandedHeight = clusterEvents.length * (cardHeightPx + 2);
+            const expandedHeight = clusterEvents.length * (expandedCardHeightPx + 2);
 
             // If the bottom of the expanded cluster goes past the visible bottom, flip it!
             if (anchorTopPx + expandedHeight > containerBottom) {
@@ -96,26 +100,29 @@ export const WeekCalendar: React.FC<WeekCalendarProps> = ({
         }, ANIM_MS);
     };
 
-    // Group events into overlap clusters: events that share any time slot are clustered together.
+    // Group events into overlap clusters.
+    // Instead of a rolling cluster end (which drags a 3pm event into a 2pm cluster just because it overlaps a 2:45 event),
+    // we group events into the cluster ONLY if they overlap with the anchor (the first event in the cluster) visually.
     const computeClusters = (dayEvents: CalendarEvent[]): CalendarEvent[][] => {
         if (dayEvents.length === 0) return [];
-        // Use visual end (min 1 hour) — matches how getClusterStyles sizes the cards,
-        // so events that overlap visually are always in the same cluster.
+
         const visualEnd = (ev: CalendarEvent) =>
             Math.max(ev.end.getTime(), ev.start.getTime() + 60 * 60 * 1000);
+
         const sorted = [...dayEvents].sort((a, b) => a.start.getTime() - b.start.getTime());
         const clusters: CalendarEvent[][] = [];
         let current: CalendarEvent[] = [sorted[0]];
-        let clusterEnd = visualEnd(sorted[0]);
+        let anchorEnd = visualEnd(sorted[0]);
+
         for (let i = 1; i < sorted.length; i++) {
             const ev = sorted[i];
-            if (ev.start.getTime() < clusterEnd) {
+            // Only join the cluster if this event overlaps the anchor's visual block
+            if (ev.start.getTime() < anchorEnd) {
                 current.push(ev);
-                clusterEnd = Math.max(clusterEnd, visualEnd(ev));
             } else {
                 clusters.push(current);
                 current = [ev];
-                clusterEnd = visualEnd(ev);
+                anchorEnd = visualEnd(ev);
             }
         }
         clusters.push(current);
@@ -139,25 +146,30 @@ export const WeekCalendar: React.FC<WeekCalendarProps> = ({
         if (e <= s) e = s + 1;
 
         const topPct = ((s - startHour) / totalHours) * 100;
-        const heightPct = Math.max(((e - s) / totalHours) * 100, (0.5 / totalHours) * 100);
-        const cardHeightPx = Math.max(Math.round((heightPct / 100) * dayHeight), 48);
+
+        // Constrain card height to exactly 1 hour block minus 2px vertical margin
+        const cardHeightPx = (dayHeight / totalHours) - 2;
 
         return cluster.map((_, idx) => {
+            // Expand the card on hover if it's too small to read the details
+            const heightPx = isHovered ? Math.max(cardHeightPx, 48) : cardHeightPx;
+
             const base: React.CSSProperties = {
                 position: 'absolute',
-                height: `${cardHeightPx}px`,
-                transition: 'top 220ms cubic-bezier(0.34,1.2,0.64,1), left 220ms cubic-bezier(0.34,1.2,0.64,1), right 220ms cubic-bezier(0.34,1.2,0.64,1)',
+                height: `${heightPx}px`,
+                transition: 'height 220ms ease, top 220ms cubic-bezier(0.34,1.2,0.64,1), left 220ms cubic-bezier(0.34,1.2,0.64,1), right 220ms cubic-bezier(0.34,1.2,0.64,1)',
             };
 
             if (isHovered) {
                 // Expanded
-                const offsetPx = idx * (cardHeightPx + 2);
+                const offsetPx = idx * (heightPx + 2);
                 const sign = isFlipped ? -1 : 1; // Stack up or down
                 return {
                     ...base,
-                    top: `calc(${topPct}% + ${sign * offsetPx}px)`,
-                    left: '4px',
-                    right: '4px',
+                    // Add 1px offset from grid line
+                    top: `calc(${topPct}% + ${sign * offsetPx}px + 1px)`,
+                    left: '1px',
+                    right: '5px',
                     // Keep card 0 slightly higher zIndex so clicking feels right
                     zIndex: 20 + (cluster.length - idx),
                 };
@@ -166,9 +178,9 @@ export const WeekCalendar: React.FC<WeekCalendarProps> = ({
                 const offsetPx = Math.min(idx * 8, 40);
                 return {
                     ...base,
-                    top: `${topPct}%`,
-                    left: `${offsetPx}px`,
-                    right: '4px',
+                    top: `calc(${topPct}% + 1px)`,
+                    left: `calc(1px + ${offsetPx}px)`,
+                    right: '5px',
                     zIndex: 10 + idx,
                 };
             }
@@ -348,6 +360,7 @@ export const WeekCalendar: React.FC<WeekCalendarProps> = ({
                                                             style={style}
                                                             onMouseEnter={() => handleClusterEnter(clusterId, cluster)}
                                                             onMouseLeave={handleClusterLeave}
+                                                            onClick={(e) => { e.stopPropagation(); setSelectedEvent(event); }}
                                                         >
                                                             {renderEvent(event)}
                                                         </div>
@@ -355,7 +368,7 @@ export const WeekCalendar: React.FC<WeekCalendarProps> = ({
                                                         <div
                                                             key={event.id}
                                                             className={cn(
-                                                                'absolute rounded-md p-1.5 text-xs overflow-hidden border shadow-sm cursor-pointer',
+                                                                'absolute rounded p-0.5 px-1.5 text-[10px] sm:text-xs border shadow-sm cursor-pointer flex flex-col justify-start overflow-hidden',
                                                                 event.type === 'maintenance'
                                                                     ? 'bg-rose-50 border-rose-200 text-rose-800 hover:bg-rose-100'
                                                                     : 'bg-indigo-50 border-indigo-200 text-indigo-800 hover:bg-indigo-100'
@@ -363,9 +376,10 @@ export const WeekCalendar: React.FC<WeekCalendarProps> = ({
                                                             style={style}
                                                             onMouseEnter={() => handleClusterEnter(clusterId, cluster)}
                                                             onMouseLeave={handleClusterLeave}
+                                                            onClick={(e) => { e.stopPropagation(); setSelectedEvent(event); }}
                                                         >
-                                                            <div className="font-semibold truncate">{event.title}</div>
-                                                            <div className="text-[10px] opacity-70 truncate">{format(event.start, 'h:mm a')}</div>
+                                                            <div className="font-semibold leading-tight line-clamp-1">{event.title}</div>
+                                                            <div className="text-[9px] opacity-70 truncate mt-0.5">{format(event.start, 'h:mm a')}</div>
                                                         </div>
                                                     );
                                                 })}
@@ -378,6 +392,15 @@ export const WeekCalendar: React.FC<WeekCalendarProps> = ({
                     </div>
                 </div>
             </div>
+
+            {/* Event Detail Modal */}
+            {selectedEvent && (
+                <EventDetailModal
+                    event={selectedEvent}
+                    onClose={() => setSelectedEvent(null)}
+                    renderEvent={renderEvent}
+                />
+            )}
         </div>
     );
 };
