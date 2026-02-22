@@ -1,0 +1,100 @@
+@import "tailwindcss";
+@config "../tailwind.config.js";
+@source "../src/**/*.{js,ts,jsx,tsx}";
+@source "../index.html";
+
+@utility scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+
+    &::-webkit-scrollbar {
+        display: none;
+    }
+}
+
+/* Cylinder / drum roll animations for month label */
+@keyframes roll-out-up {
+    from {
+        transform: rotateX(0deg);
+        opacity: 1;
+    }
+
+    to {
+        transform: rotateX(-90deg);
+        opacity: 0;
+    }
+}
+
+@keyframes roll-in-down {
+    from {
+        transform: rotateX(90deg);
+        opacity: 0;
+    }
+
+    to {
+        transform: rotateX(0deg);
+        opacity: 1;
+    }
+}
+
+@keyframes roll-out-down {
+    from {
+        transform: rotateX(0deg);
+        opacity: 1;
+    }
+
+    to {
+        transform: rotateX(90deg);
+        opacity: 0;
+    }
+}
+
+@keyframes roll-in-up {
+    from {
+        transform: rotateX(-90deg);
+        opacity: 0;
+    }
+
+    to {
+        transform: rotateX(0deg);
+        opacity: 1;
+    }
+}
+
+/* Day detail modal animations */
+@keyframes day-modal-backdrop-in {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes day-modal-panel-in {
+    from {
+        opacity: 0;
+        transform: scale(0.95) translateY(8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+/* Week view: hover-unfold dropdown for overlapping events */
+@keyframes unfold-down {
+    from {
+        opacity: 0;
+        transform: scaleY(0.7) translateY(-6px);
+        transform-origin: top;
+    }
+
+    to {
+        opacity: 1;
+        transform: scaleY(1) translateY(0);
+        transform-origin: top;
+    }
+}
