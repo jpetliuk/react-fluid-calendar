@@ -1,6 +1,7 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { format, isSameMinute, startOfDay } from 'date-fns';
 import { cn } from './Calendar';
+import { EventDetailModal } from './EventDetailModal';
 import type { CalendarEvent } from '../types';
 
 interface DayDetailModalProps {
@@ -47,6 +48,7 @@ export const DayDetailModal: React.FC<DayDetailModalProps> = ({
     renderEvent,
 }) => {
     const panelRef = useRef<HTMLDivElement>(null);
+    const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
 
     // Close on Escape
     useEffect(() => {
@@ -140,7 +142,8 @@ export const DayDetailModal: React.FC<DayDetailModalProps> = ({
                             return (
                                 <div
                                     key={event.id}
-                                    className="flex items-start gap-3 p-3 rounded-xl hover:bg-zinc-50 transition-colors group"
+                                    onClick={() => setSelectedEvent(event)}
+                                    className="flex items-start gap-3 p-3 rounded-xl hover:bg-zinc-50 transition-colors group cursor-pointer"
                                 >
                                     {/* Color dot */}
                                     <div className={cn('w-2.5 h-2.5 rounded-full mt-1.5 shrink-0', style.dot)} />
@@ -177,6 +180,15 @@ export const DayDetailModal: React.FC<DayDetailModalProps> = ({
                     </div>
                 )}
             </div>
+
+            {/* Event Detail Modal (Nested) */}
+            {selectedEvent && (
+                <EventDetailModal
+                    event={selectedEvent}
+                    onClose={() => setSelectedEvent(null)}
+                    renderEvent={renderEvent}
+                />
+            )}
         </div>
     );
 };

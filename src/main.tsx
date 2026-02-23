@@ -68,6 +68,19 @@ const events = [
         id: 'wed-1', title: 'Client Pitch: Acme Corp', type: 'rental',
         start: new Date(currentYear, currentMonth, startDay + 3, 14, 0),
         end: new Date(currentYear, currentMonth, startDay + 3, 15, 30),
+        customer: {
+            name: 'John Doe',
+            company: 'Acme Corp',
+            contact: 'john.doe@acmecorp.com | (555) 123-4567'
+        },
+        asset: {
+            name: '2024 Peterbilt 579 (Sleeper)',
+            licensePlate: 'TX-ABC1234',
+            id: 'TRK-9876'
+        },
+        location: 'Gate A - North Yard',
+        notes: 'Customer requested late drop-off. Please ensure vehicle is fully fueled before dispatch.',
+        orderLink: '/orders/TRK-9876'
     },
     {
         id: 'wed-2', title: 'Acme Q&A', type: 'default',

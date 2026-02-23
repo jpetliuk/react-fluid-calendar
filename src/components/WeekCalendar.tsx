@@ -368,7 +368,7 @@ export const WeekCalendar: React.FC<WeekCalendarProps> = ({
                                                         <div
                                                             key={event.id}
                                                             className={cn(
-                                                                'absolute rounded-md p-0.5 px-1.5 text-[10px] sm:text-xs border shadow-sm flex flex-col justify-start overflow-visible cursor-pointer',
+                                                                'absolute rounded-md p-0.5 px-1.5 text-[10px] sm:text-xs border shadow-sm flex flex-col justify-center items-center text-center overflow-visible cursor-pointer',
                                                                 // Invisible pseudo-element hitbox extension to bridge gaps so hover state doesn't drop
                                                                 'after:absolute after:-bottom-2 after:-right-2 after:-left-2 after:-top-2 after:bg-transparent -after:z-10',
                                                                 event.type === 'maintenance'

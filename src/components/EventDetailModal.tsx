@@ -66,7 +66,10 @@ export const EventDetailModal: React.FC<EventDetailModalProps> = ({
         <div
             className="fixed inset-0 z-50 flex items-center justify-center"
             style={{ animation: 'day-modal-backdrop-in 220ms ease forwards' }}
-            onClick={onClose}
+            onClick={(e) => {
+                e.stopPropagation();
+                onClose();
+            }}
             aria-modal="true"
             role="dialog"
             aria-label={`Details for ${event.title}`}
@@ -116,9 +119,67 @@ export const EventDetailModal: React.FC<EventDetailModalProps> = ({
                             <p className="text-sm text-zinc-400 mt-0.5">
                                 {formatEventTime(event.start, event.end)}
                             </p>
+
+                            {/* Rental Specific Details */}
+                            <div className="mt-6 space-y-4">
+                                {event.customer && (
+                                    <div>
+                                        <h3 className="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-1">Customer</h3>
+                                        <div className="text-sm text-zinc-800">
+                                            <div className="font-medium">{event.customer.name}</div>
+                                            {event.customer.company && <div className="text-zinc-500">{event.customer.company}</div>}
+                                            {event.customer.contact && <div className="text-zinc-500">{event.customer.contact}</div>}
+                                        </div>
+                                    </div>
+                                )}
+
+                                {event.asset && (
+                                    <div>
+                                        <h3 className="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-1">Asset</h3>
+                                        <div className="text-sm text-zinc-800">
+                                            <div className="font-medium">{event.asset.name}</div>
+                                            {(event.asset.licensePlate || event.asset.id) && (
+                                                <div className="text-zinc-500 mt-0.5">
+                                                    {event.asset.licensePlate && <span>Plate: {event.asset.licensePlate}</span>}
+                                                    {event.asset.licensePlate && event.asset.id && <span className="mx-2 text-zinc-300">•</span>}
+                                                    {event.asset.id && <span>ID: {event.asset.id}</span>}
+                                                </div>
+                                            )}
+                                        </div>
+                                    </div>
+                                )}
+
+                                {event.location && (
+                                    <div>
+                                        <h3 className="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-1">Location</h3>
+                                        <div className="text-sm text-zinc-800">{event.location}</div>
+                                    </div>
+                                )}
+
+                                {event.notes && (
+                                    <div>
+                                        <h3 className="text-xs font-bold text-zinc-400 uppercase tracking-wider mb-1">Notes</h3>
+                                        <div className="text-sm text-zinc-800 bg-zinc-50 p-2.5 rounded-lg border border-zinc-100 leading-relaxed">{event.notes}</div>
+                                    </div>
+                                )}
+                            </div>
                         </div>
                     )}
                 </div>
+
+                {/* Footer Section */}
+                {event.orderLink && (
+                    <div className="px-6 py-4 bg-zinc-50 border-t border-zinc-100">
+                        <a
+                            href={event.orderLink}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="w-full flex items-center justify-center py-2.5 px-4 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium rounded-lg transition-colors shadow-sm"
+                        >
+                            View Full Order
+                        </a>
+                    </div>
+                )}
             </div>
         </div>
     );

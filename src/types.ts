@@ -7,6 +7,22 @@ export interface CalendarEvent {
     end: Date;
     color?: string;
     type?: 'rental' | 'maintenance' | string;
+
+    // Rental specific fields
+    customer?: {
+        name: string;
+        company?: string;
+        contact?: string;
+    };
+    asset?: {
+        name: string;
+        licensePlate?: string;
+        id?: string;
+    };
+    location?: string;
+    notes?: string;
+    orderLink?: string;
+
     [key: string]: any;
 }
 
