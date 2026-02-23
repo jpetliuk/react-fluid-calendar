@@ -61,8 +61,8 @@ export const WeekCalendar: React.FC<WeekCalendarProps> = ({
             const topPct = (s - startHour) / totalHours;
             const anchorTopPx = topPct * dayHeight;
 
-            // Constrain card height to exactly 1 hour block minus margin
-            const baseCardHeightPx = (dayHeight / totalHours) - 2;
+            // Constrain card height to exactly 1 hour block minus 4px margin
+            const baseCardHeightPx = (dayHeight / totalHours) - 4;
             const expandedCardHeightPx = Math.max(baseCardHeightPx, 48);
 
             // Total height of the expanded cluster
@@ -147,8 +147,8 @@ export const WeekCalendar: React.FC<WeekCalendarProps> = ({
 
         const topPct = ((s - startHour) / totalHours) * 100;
 
-        // Constrain card height to exactly 1 hour block minus 2px vertical margin
-        const cardHeightPx = (dayHeight / totalHours) - 2;
+        // Constrain card height to exactly 1 hour block minus 4px vertical margin
+        const cardHeightPx = (dayHeight / totalHours) - 4;
 
         return cluster.map((_, idx) => {
             // Expand the card on hover if it's too small to read the details
@@ -166,10 +166,10 @@ export const WeekCalendar: React.FC<WeekCalendarProps> = ({
                 const sign = isFlipped ? -1 : 1; // Stack up or down
                 return {
                     ...base,
-                    // Add 1px offset from grid line
-                    top: `calc(${topPct}% + ${sign * offsetPx}px + 1px)`,
-                    left: '1px',
-                    right: '5px',
+                    // Add 2px offset from grid line
+                    top: `calc(${topPct}% + ${sign * offsetPx}px + 2px)`,
+                    left: '2px',
+                    right: '6px',
                     // Keep card 0 slightly higher zIndex so clicking feels right
                     zIndex: 20 + (cluster.length - idx),
                 };
@@ -178,9 +178,9 @@ export const WeekCalendar: React.FC<WeekCalendarProps> = ({
                 const offsetPx = Math.min(idx * 8, 40);
                 return {
                     ...base,
-                    top: `calc(${topPct}% + 1px)`,
-                    left: `calc(1px + ${offsetPx}px)`,
-                    right: '5px',
+                    top: `calc(${topPct}% + 2px)`,
+                    left: `calc(2px + ${offsetPx}px)`,
+                    right: '6px',
                     zIndex: 10 + idx,
                 };
             }
@@ -368,7 +368,9 @@ export const WeekCalendar: React.FC<WeekCalendarProps> = ({
                                                         <div
                                                             key={event.id}
                                                             className={cn(
-                                                                'absolute rounded p-0.5 px-1.5 text-[10px] sm:text-xs border shadow-sm cursor-pointer flex flex-col justify-start overflow-hidden',
+                                                                'absolute rounded-md p-0.5 px-1.5 text-[10px] sm:text-xs border shadow-sm flex flex-col justify-start overflow-visible cursor-pointer',
+                                                                // Invisible pseudo-element hitbox extension to bridge gaps so hover state doesn't drop
+                                                                'after:absolute after:-bottom-2 after:-right-2 after:-left-2 after:-top-2 after:bg-transparent -after:z-10',
                                                                 event.type === 'maintenance'
                                                                     ? 'bg-rose-50 border-rose-200 text-rose-800 hover:bg-rose-100'
                                                                     : 'bg-indigo-50 border-indigo-200 text-indigo-800 hover:bg-indigo-100'
@@ -379,7 +381,9 @@ export const WeekCalendar: React.FC<WeekCalendarProps> = ({
                                                             onClick={(e) => { e.stopPropagation(); setSelectedEvent(event); }}
                                                         >
                                                             <div className="font-semibold leading-tight line-clamp-1">{event.title}</div>
-                                                            <div className="text-[9px] opacity-70 truncate mt-0.5">{format(event.start, 'h:mm a')}</div>
+                                                            {isHovered && (
+                                                                <div className="text-[9px] opacity-70 truncate mt-0.5">{format(event.start, 'h:mm a')}</div>
+                                                            )}
                                                         </div>
                                                     );
                                                 })}

@@ -37,7 +37,7 @@ const events = [
     },
     {
         id: 'mon-4', title: 'Late Lunch', type: 'default',
-        start: new Date(currentYear, currentMonth, startDay + 1, 14, 0),
+        start: new Date(currentYear, currentMonth, startDay + 1, 14, 30),
         end: new Date(currentYear, currentMonth, startDay + 1, 15, 0),
     },
 
@@ -77,7 +77,7 @@ const events = [
 
     // --- Thursday (Massive cluster + Zero Duration event) ---
     {
-        id: 'thu-0', title: 'Lunch', type: 'maintenance',
+        id: 'thu-0', title: 'Lunch With Bryan Mayer at Benny House', type: 'maintenance',
         start: new Date(currentYear, currentMonth, startDay + 4, 12, 0),
         end: new Date(currentYear, currentMonth, startDay + 4, 12, 0),
     },
