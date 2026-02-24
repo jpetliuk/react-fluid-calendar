@@ -1,6 +1,5 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
-// @ts-ignore - this is a known issue where the editor might complain but the build works
 import dts from 'vite-plugin-dts';
 import path from 'path';
 

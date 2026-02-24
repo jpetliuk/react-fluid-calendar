@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { format, isSameMinute, startOfDay } from 'date-fns';
-import { cn } from './Calendar';
+import { cn } from '../utils/theme';
 import { EventDetailModal } from './EventDetailModal';
 import type { CalendarEvent } from '../types';
 
@@ -14,20 +14,20 @@ interface DayDetailModalProps {
 function eventTypeStyle(type?: string) {
     if (type === 'maintenance') {
         return {
-            pill: 'bg-rose-100 text-rose-700 border-rose-200',
+            pill: 'bg-rose-100 text-rose-700 border-rose-200 dark:bg-rose-900/30 dark:text-rose-300 dark:border-rose-800',
             dot: 'bg-rose-500',
             label: 'Maintenance',
         };
     }
     if (type === 'rental') {
         return {
-            pill: 'bg-indigo-100 text-indigo-700 border-indigo-200',
+            pill: 'bg-indigo-100 text-indigo-700 border-indigo-200 dark:bg-indigo-900/30 dark:text-indigo-300 dark:border-indigo-800',
             dot: 'bg-indigo-500',
             label: 'Rental',
         };
     }
     return {
-        pill: 'bg-zinc-100 text-zinc-600 border-zinc-200',
+        pill: 'bg-zinc-100 text-zinc-600 border-zinc-200 dark:bg-zinc-800 dark:text-zinc-300 dark:border-zinc-700',
         dot: 'bg-zinc-400',
         label: type ? type.charAt(0).toUpperCase() + type.slice(1) : 'Event',
     };
@@ -83,7 +83,7 @@ export const DayDetailModal: React.FC<DayDetailModalProps> = ({
             <div
                 ref={panelRef}
                 tabIndex={-1}
-                className="relative bg-white rounded-2xl shadow-2xl w-full max-w-sm mx-4 flex flex-col outline-none"
+                className="relative bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl w-full max-w-sm mx-4 flex flex-col outline-none"
                 style={{
                     animation: 'day-modal-panel-in 260ms cubic-bezier(0.34,1.56,0.64,1) forwards',
                     maxHeight: '80vh',
@@ -96,10 +96,10 @@ export const DayDetailModal: React.FC<DayDetailModalProps> = ({
                         <p className="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-0.5">
                             {format(day, 'EEEE')}
                         </p>
-                        <h2 className="text-2xl font-bold text-zinc-900 leading-tight">
+                        <h2 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100 leading-tight">
                             {format(day, 'd')}
                             {' '}
-                            <span className="text-zinc-400 font-light text-xl">
+                            <span className="text-zinc-400 dark:text-zinc-500 font-light text-xl">
                                 {format(day, 'MMMM yyyy')}
                             </span>
                         </h2>
@@ -111,7 +111,7 @@ export const DayDetailModal: React.FC<DayDetailModalProps> = ({
                     </div>
                     <button
                         onClick={onClose}
-                        className="w-8 h-8 flex items-center justify-center rounded-xl text-zinc-400 hover:text-zinc-700 hover:bg-zinc-100 transition-all shrink-0 mt-0.5"
+                        className="w-8 h-8 flex items-center justify-center rounded-xl text-zinc-400 hover:text-zinc-700 hover:bg-zinc-100 dark:text-zinc-500 dark:hover:text-zinc-300 dark:hover:bg-zinc-800 transition-all shrink-0 mt-0.5"
                         aria-label="Close"
                     >
                         ✕
@@ -119,7 +119,7 @@ export const DayDetailModal: React.FC<DayDetailModalProps> = ({
                 </div>
 
                 {/* Divider */}
-                <div className="h-px bg-zinc-100 mx-5" />
+                <div className="h-px bg-zinc-100 dark:bg-zinc-800 mx-5" />
 
                 {/* Event list */}
                 <div className="overflow-y-auto flex-1 px-4 py-3 space-y-2">
@@ -143,26 +143,32 @@ export const DayDetailModal: React.FC<DayDetailModalProps> = ({
                                 <div
                                     key={event.id}
                                     onClick={() => setSelectedEvent(event)}
-                                    className="flex items-start gap-3 p-3 rounded-xl hover:bg-zinc-50 transition-colors group cursor-pointer"
+                                    className="flex items-start gap-3 p-3 rounded-xl hover:bg-zinc-50 dark:hover:bg-zinc-800/50 transition-colors group cursor-pointer"
                                 >
                                     {/* Color dot */}
-                                    <div className={cn('w-2.5 h-2.5 rounded-full mt-1.5 shrink-0', style.dot)} />
+                                    <div
+                                        className={cn('w-2.5 h-2.5 rounded-full mt-1.5 shrink-0', !event.color && style.dot)}
+                                        style={event.color ? { backgroundColor: event.color } : undefined}
+                                    />
 
                                     {/* Content */}
                                     <div className="flex-1 min-w-0">
-                                        <p className="text-sm font-semibold text-zinc-800 leading-tight">
+                                        <p className="text-sm font-semibold text-zinc-800 dark:text-zinc-200 leading-tight">
                                             {event.title}
                                         </p>
-                                        <p className="text-xs text-zinc-400 mt-0.5">
+                                        <p className="text-xs text-zinc-400 dark:text-zinc-500 mt-0.5">
                                             {formatEventTime(event.start, event.end)}
                                         </p>
                                     </div>
 
                                     {/* Type badge */}
-                                    <span className={cn(
-                                        'text-[10px] font-semibold px-2 py-0.5 rounded-full border shrink-0',
-                                        style.pill
-                                    )}>
+                                    <span
+                                        className={cn(
+                                            'text-[10px] font-semibold px-2 py-0.5 rounded-full border dark:border-zinc-700/50 shrink-0',
+                                            !event.color && style.pill
+                                        )}
+                                        style={event.color ? { backgroundColor: `${event.color}15`, color: event.color, borderColor: `${event.color}30` } : undefined}
+                                    >
                                         {style.label}
                                     </span>
                                 </div>
@@ -173,7 +179,7 @@ export const DayDetailModal: React.FC<DayDetailModalProps> = ({
 
                 {/* Footer count */}
                 {events.length > 0 && (
-                    <div className="px-5 py-3 border-t border-zinc-100 shrink-0">
+                    <div className="px-5 py-3 border-t border-zinc-100 dark:border-zinc-800 shrink-0">
                         <p className="text-xs text-zinc-400 text-right">
                             {events.length} {events.length === 1 ? 'event' : 'events'}
                         </p>

@@ -11,7 +11,7 @@ export interface LayoutEvent extends CalendarEvent {
  * Basic collision detection and layout for day view.
  * For Month view, we typically stack events vertically.
  */
-export const layoutEventsForDay = (events: CalendarEvent[], _containerHeight: number = 100): LayoutEvent[] => {
+export const layoutEventsForDay = (events: CalendarEvent[]): LayoutEvent[] => {
     // Placeholder logic for now, will expand for true layout engine
     return events.map((event, index) => ({
         ...event,

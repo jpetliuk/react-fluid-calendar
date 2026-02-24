@@ -23,7 +23,7 @@ export interface CalendarEvent {
     notes?: string;
     orderLink?: string;
 
-    [key: string]: any;
+    [key: string]: unknown;
 }
 
 export type ViewMode = 'month' | 'week';
@@ -43,6 +43,7 @@ export interface WeeklyCalendarSettings {
 export interface FluidCalendarProps {
     events: CalendarEvent[];
     view?: ViewMode;                            // Initial view (default 'month')
+    theme?: 'light' | 'dark';                   // Visual theme (default 'light')
     onViewChange?: (view: ViewMode) => void;
     width?: string | number;                    // CSS width (default '100%')
     height?: string | number;                   // CSS height (default 'auto')

@@ -1,9 +1,9 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useMemo } from 'react';
 import {
     startOfWeek, addDays, addWeeks, subWeeks,
-    format, isToday, isSameDay
+    format, isToday
 } from 'date-fns';
-import { cn } from './Calendar';
+import { cn } from '../utils/theme';
 import { EventDetailModal } from './EventDetailModal';
 import type { CalendarEvent, WeeklyCalendarSettings } from '../types';
 
@@ -85,6 +85,17 @@ export const WeekCalendar: React.FC<WeekCalendarProps> = ({
 
     const weekStart = startOfWeek(displayDate);
     const days = Array.from({ length: 7 }, (_, i) => addDays(weekStart, i));
+
+    // Memoize the grouping of events by day string to turn an O(N*7) operation into O(N)
+    const eventsByDay = useMemo(() => {
+        const grouped: Record<string, CalendarEvent[]> = {};
+        for (const event of events) {
+            const dateStr = format(event.start, 'yyyy-MM-dd');
+            if (!grouped[dateStr]) grouped[dateStr] = [];
+            grouped[dateStr].push(event);
+        }
+        return grouped;
+    }, [events]);
 
     const ANIM_MS = 320;
 
@@ -197,7 +208,7 @@ export const WeekCalendar: React.FC<WeekCalendarProps> = ({
     };
 
     return (
-        <div className="w-full h-full flex flex-col">
+        <div className="w-full h-full flex flex-col bg-white dark:bg-zinc-950">
             {/* Header */}
             <div className="flex items-center justify-between px-4 py-3 shrink-0">
                 <div className="flex items-center gap-3">
@@ -205,14 +216,14 @@ export const WeekCalendar: React.FC<WeekCalendarProps> = ({
                     <div className="flex gap-1">
                         <button
                             onClick={() => navigate('prev')}
-                            className="w-8 h-8 flex items-center justify-center rounded-lg text-zinc-500 hover:bg-zinc-100 transition-all"
+                            className="w-8 h-8 flex items-center justify-center rounded-lg text-zinc-500 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800 transition-all"
                             aria-label="Previous week"
                         >
                             ←
                         </button>
                         <button
                             onClick={() => navigate('next')}
-                            className="w-8 h-8 flex items-center justify-center rounded-lg text-zinc-500 hover:bg-zinc-100 transition-all"
+                            className="w-8 h-8 flex items-center justify-center rounded-lg text-zinc-500 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800 transition-all"
                             aria-label="Next week"
                         >
                             →
@@ -229,37 +240,37 @@ export const WeekCalendar: React.FC<WeekCalendarProps> = ({
                                     transformOrigin: direction === 'next' ? 'center top' : 'center bottom',
                                 }}
                             >
-                                <h2 className="text-xl font-bold text-zinc-800 tracking-tight whitespace-nowrap">
+                                <h2 className="text-xl font-bold text-zinc-800 dark:text-zinc-100 tracking-tight whitespace-nowrap">
                                     Week of {format(outgoingWeekStart, 'MMM d')}{' '}
-                                    <span className="text-zinc-400 font-light">{format(outgoingWeekStart, 'yyyy')}</span>
+                                    <span className="text-zinc-400 dark:text-zinc-500 font-light">{format(outgoingWeekStart, 'yyyy')}</span>
                                 </h2>
                             </div>
                         )}
                         {/* Incoming label */}
                         <h2
-                            className="text-xl font-bold text-zinc-800 tracking-tight whitespace-nowrap"
+                            className="text-xl font-bold text-zinc-800 dark:text-zinc-100 tracking-tight whitespace-nowrap"
                             style={labelAnimating ? {
                                 animation: `${direction === 'next' ? 'roll-in-down' : 'roll-in-up'} ${ANIM_MS}ms cubic-bezier(0.4,0,0.2,1) forwards`,
                                 transformOrigin: direction === 'next' ? 'center bottom' : 'center top',
                             } : {}}
                         >
                             Week of {format(weekStart, 'MMM d')}{' '}
-                            <span className="text-zinc-400 font-light">{format(weekStart, 'yyyy')}</span>
+                            <span className="text-zinc-400 dark:text-zinc-500 font-light">{format(weekStart, 'yyyy')}</span>
                         </h2>
                     </div>
                 </div>
 
                 {/* View Toggle */}
-                <div className="flex gap-1 p-1 bg-zinc-100 rounded-lg">
+                <div className="flex gap-1 p-1 bg-zinc-100 dark:bg-zinc-800/50 rounded-lg">
                     <button
                         onClick={() => onViewChange('month')}
-                        className={cn('px-3 py-1 rounded-md text-sm font-medium transition-all', view === 'month' ? 'bg-white text-zinc-900 shadow-sm' : 'text-zinc-500 hover:text-zinc-700')}
+                        className={cn('px-3 py-1 rounded-md text-sm font-medium transition-all', view === 'month' ? 'bg-white dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100 shadow-sm' : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200')}
                     >
                         Month
                     </button>
                     <button
                         onClick={() => onViewChange('week')}
-                        className={cn('px-3 py-1 rounded-md text-sm font-medium transition-all', view === 'week' ? 'bg-white text-zinc-900 shadow-sm' : 'text-zinc-500 hover:text-zinc-700')}
+                        className={cn('px-3 py-1 rounded-md text-sm font-medium transition-all', view === 'week' ? 'bg-white dark:bg-zinc-700 text-zinc-900 dark:text-zinc-100 shadow-sm' : 'text-zinc-500 dark:text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200')}
                     >
                         Week
                     </button>
@@ -267,25 +278,25 @@ export const WeekCalendar: React.FC<WeekCalendarProps> = ({
             </div>
 
             {/* Day-of-week labels — fixed height */}
-            <div className="flex shrink-0 border-t border-b border-zinc-100">
+            <div className="flex shrink-0 border-t border-b border-zinc-100 dark:border-zinc-800">
                 {/* Spacer for time column */}
-                <div style={{ width: TIME_COL_WIDTH }} className="shrink-0 border-r border-zinc-100 bg-zinc-50/30" />
+                <div style={{ width: TIME_COL_WIDTH }} className="shrink-0 border-r border-zinc-100 dark:border-zinc-800 bg-zinc-50/30 dark:bg-zinc-900/30" />
                 {/* Day headers */}
                 <div className="flex-1 grid grid-cols-7">
                     {days.map(day => (
                         <div
                             key={day.toISOString()}
                             className={cn(
-                                'flex flex-col items-center py-2 border-r border-zinc-100 last:border-r-0',
-                                isToday(day) && 'bg-indigo-50/40'
+                                'flex flex-col items-center py-2 border-r border-zinc-100 dark:border-zinc-800 last:border-r-0',
+                                isToday(day) && 'bg-indigo-50/40 dark:bg-indigo-900/20'
                             )}
                         >
-                            <span className={cn('text-[10px] uppercase font-bold tracking-wider mb-1', isToday(day) ? 'text-indigo-500' : 'text-zinc-400')}>
+                            <span className={cn('text-[10px] uppercase font-bold tracking-wider mb-1', isToday(day) ? 'text-indigo-500 dark:text-indigo-400' : 'text-zinc-400 dark:text-zinc-500')}>
                                 {format(day, 'EEE')}
                             </span>
                             <span className={cn(
                                 'text-sm font-semibold w-7 h-7 flex items-center justify-center rounded-full',
-                                isToday(day) ? 'bg-indigo-600 text-white' : 'text-zinc-700'
+                                isToday(day) ? 'bg-indigo-600 text-white' : 'text-zinc-700 dark:text-zinc-200'
                             )}>
                                 {format(day, 'd')}
                             </span>
@@ -305,14 +316,14 @@ export const WeekCalendar: React.FC<WeekCalendarProps> = ({
                 >
                     {/* Time column */}
                     <div
-                        className="shrink-0 border-r border-zinc-100 bg-zinc-50/30 relative"
+                        className="shrink-0 border-r border-zinc-100 dark:border-zinc-800 bg-zinc-50/30 dark:bg-zinc-900/30 relative"
                         style={{ width: TIME_COL_WIDTH }}
                     >
                         {hours.map((hour, idx) => (
                             <div
                                 key={hour}
                                 className={cn(
-                                    'absolute w-full flex items-start justify-end pr-2 text-[10px] font-medium text-zinc-400',
+                                    'absolute w-full flex items-start justify-end pr-2 text-[10px] font-medium text-zinc-400 dark:text-zinc-500',
                                     idx > 0 && '-translate-y-2'
                                 )}
                                 style={{ top: `${(idx / totalHours) * 100}%` }}
@@ -327,20 +338,21 @@ export const WeekCalendar: React.FC<WeekCalendarProps> = ({
                         {/* Horizontal hour lines */}
                         <div className="absolute inset-0 pointer-events-none flex flex-col">
                             {hours.map(hour => (
-                                <div key={hour} className="flex-1 border-t border-zinc-100" />
+                                <div key={hour} className="flex-1 border-t border-zinc-100 dark:border-zinc-800" />
                             ))}
                         </div>
 
                         {/* Day columns */}
                         {days.map(day => {
-                            const dayEvents = events.filter(e => isSameDay(e.start, day));
+                            const dateStr = format(day, 'yyyy-MM-dd');
+                            const dayEvents = eventsByDay[dateStr] || [];
                             const clusters = computeClusters(dayEvents);
                             return (
                                 <div
                                     key={day.toISOString()}
                                     className={cn(
-                                        'relative border-r border-zinc-100 last:border-r-0 h-full overflow-visible',
-                                        isToday(day) && 'bg-indigo-50/10'
+                                        'relative border-r border-zinc-100 dark:border-zinc-800 last:border-r-0 h-full overflow-visible',
+                                        isToday(day) && 'bg-indigo-50/10 dark:bg-indigo-900/10'
                                     )}
                                 >
                                     {clusters.map(cluster => {
@@ -371,11 +383,14 @@ export const WeekCalendar: React.FC<WeekCalendarProps> = ({
                                                                 'absolute rounded-md p-0.5 px-1.5 text-[10px] sm:text-xs border shadow-sm flex flex-col justify-center items-center text-center overflow-visible cursor-pointer',
                                                                 // Invisible pseudo-element hitbox extension to bridge gaps so hover state doesn't drop
                                                                 'after:absolute after:-bottom-2 after:-right-2 after:-left-2 after:-top-2 after:bg-transparent -after:z-10',
-                                                                event.type === 'maintenance'
-                                                                    ? 'bg-rose-50 border-rose-200 text-rose-800 hover:bg-rose-100'
-                                                                    : 'bg-indigo-50 border-indigo-200 text-indigo-800 hover:bg-indigo-100'
+                                                                !event.color && (event.type === 'maintenance'
+                                                                    ? 'bg-rose-50 border-rose-200 text-rose-800 hover:bg-rose-100 dark:bg-rose-900/30 dark:border-rose-800 dark:text-rose-300 dark:hover:bg-rose-900/50'
+                                                                    : 'bg-indigo-50 border-indigo-200 text-indigo-800 hover:bg-indigo-100 dark:bg-indigo-900/30 dark:border-indigo-800 dark:text-indigo-300 dark:hover:bg-indigo-900/50')
                                                             )}
-                                                            style={style}
+                                                            style={{
+                                                                ...style,
+                                                                ...(event.color ? { backgroundColor: `${event.color}15`, color: event.color, borderColor: `${event.color}30` } : {})
+                                                            }}
                                                             onMouseEnter={() => handleClusterEnter(clusterId, cluster)}
                                                             onMouseLeave={handleClusterLeave}
                                                             onClick={(e) => { e.stopPropagation(); setSelectedEvent(event); }}

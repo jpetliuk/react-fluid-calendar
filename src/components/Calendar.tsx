@@ -1,18 +1,15 @@
 import React, { useState } from 'react';
-import { clsx } from 'clsx';
-import { twMerge } from 'tailwind-merge';
 import { MonthCalendar } from './MonthCalendar';
 import { WeekCalendar } from './WeekCalendar';
 import type { FluidCalendarProps, ViewMode } from '../types';
 import '../index.css';
+import { cn } from '../utils/theme';
 
-export function cn(...inputs: (string | undefined | null | false)[]) {
-    return twMerge(clsx(inputs));
-}
 
 export const FluidCalendar: React.FC<FluidCalendarProps> = ({
     events = [],
     view: initialView = 'month',
+    theme = 'light',
     onViewChange,
     width = '100%',
     height,
@@ -30,7 +27,10 @@ export const FluidCalendar: React.FC<FluidCalendarProps> = ({
 
     return (
         <div
-            className="bg-white rounded-xl border border-zinc-200 shadow-lg overflow-hidden flex flex-col"
+            className={cn(
+                "bg-white dark:bg-zinc-950 rounded-xl border border-zinc-200 dark:border-zinc-800 shadow-lg overflow-hidden flex flex-col text-zinc-900 dark:text-zinc-100",
+                theme === 'dark' && "dark"
+            )}
             style={{ width, height: height ?? 'auto' }}
         >
             {view === 'month' && (
