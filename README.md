@@ -26,7 +26,7 @@ export default function App() {
       title: 'Quarterly Review',
       start: new Date(2026, 1, 15, 10, 0),
       end: new Date(2026, 1, 15, 11, 30),
-      color: '#4f46e5' // Customize your event colors easily!
+      color: '#4f46e5' 
     }
   ]);
 
@@ -35,6 +35,7 @@ export default function App() {
       <FluidCalendar 
         events={events} 
         view="month" 
+        theme="light" // "light" or "dark"
         monthlyCalendar={{ dayHeight: 120 }}
         weeklyCalendar={{ startHour: 6, endHour: 22 }}
       />
@@ -43,9 +44,42 @@ export default function App() {
 }
 ```
 
+---
+
+## Configuration & Themes
+
+### Dark Mode
+The calendar includes a built-in dark mode that can be toggled via the `theme` prop.
+
+```tsx
+<FluidCalendar 
+  events={events}
+  theme="dark" // Swaps all UI elements to a refined zinc-based dark theme
+/>
+```
+
+### Monthly vs Weekly View
+You can control the initial view and listen for changes.
+
+```tsx
+const [view, setView] = useState('month');
+
+<FluidCalendar 
+  view={view}
+  onViewChange={setView}
+  weeklyCalendar={{ 
+    startHour: 6, 
+    endHour: 20, 
+    dayHeight: 1200 // Total vertical scroll area
+  }}
+/>
+```
+
+---
+
 ## Advanced Event Detail UI
 
-The `react-fluid-calendar` now features a highly flexible dynamic rendering system for event details. You can choose to extend our built-in categories or completely redefine the modal's layout.
+The `react-fluid-calendar` features a highly flexible dynamic rendering system for event details. You can choose to extend our built-in categories or completely redefine the modal's layout.
 
 ### Option 1: Extend Built-in Categories with `extraFields`
 Add custom fields (like "Driving License" or "VIN") to predefined sections.
@@ -86,7 +120,7 @@ const event: CalendarEvent = {
 ```
 
 ### Option 3: Completely Custom Layout with `displayGroups`
-If `displayGroups` is provided, the modal layout is completely replaced with your custom-ordered sections, supporting custom colors and icons.
+If `displayGroups` is provided, the modal layout is completely replaced with your custom-ordered sections.
 
 ```tsx
 const event: CalendarEvent = {
@@ -106,7 +140,7 @@ const event: CalendarEvent = {
 ```
 
 ### High-Density Enterprise Example
-You can mix text sizes, direct Hex codes, and even animated React components as icons to create professional interfaces:
+Mix text sizes, direct Hex codes, and animated React components as icons:
 
 ```tsx
 const event: CalendarEvent = {
@@ -114,7 +148,7 @@ const event: CalendarEvent = {
   extraGroups: [
     {
       title: 'Rental Policy',
-      color: '#4f46e5', // Direct Hex support
+      color: '#4f46e5',
       icon: <PolicyIcon />,
       fields: [
         { label: 'Insurance', value: 'Full Comprehensive', size: 'large' },
@@ -139,169 +173,10 @@ const event: CalendarEvent = {
 }
 ```
 
----
-
-## Technical Details
-
-The `CalendarEvent` type is highly extensible:
+### Working with JSON / API Data
 
 ```tsx
-export interface CalendarEvent {
-    id: string;
-    title: string;
-    start: Date;
-    end: Date;
-    color?: string; // Automatically styles the backgrounds/borders
-    type?: 'rental' | 'maintenance' | string;
-    status?: string; // Now displays as a badge in the event modal
-    
-    // Optional Extended fields ready out-of-the-box
-    customer?: {
-        name: string;
-        company?: string;
-        contact?: string; // Email address
-        phone?: string;   // Phone number
-        avatar?: string;  // Image URL for profile logo/icon
-        extraFields?: DisplayField[]; // Add custom labels here
-    };
-    asset?: {
-        name: string;
-        id?: string;
-        extraFields?: DisplayField[]; // Add custom labels here (Plate, VIN, etc.)
-    };
-    details?: {
-       name: string;
-       extraFields?: DisplayField[]; // Add custom labels here
-    };
-
-    displayGroups?: DisplayGroup[]; // Replace whole UI with custom groups
-    extraGroups?: DisplayGroup[]; // Append custom categories
-}
-
-export interface DisplayField {
-    label?: string;
-    value: React.ReactNode;
-    icon?: React.ReactNode; 
-    size?: 'small' | 'large'; 
-}
-
-export interface DisplayGroup {
-    title?: string;
-    icon?: React.ReactNode;
-    fields: DisplayField[];
-    color?: string; // blue, indigo, amber, rose, emerald, zinc, or hex #XXXXXX
-}
-```
-
-
-## Example Usage Patterns
-
-### 1. Standard Rental Log
-Perfect for basic equipment or vehicle rental tracking.
-
-```tsx
-const rentalEvent: CalendarEvent = {
-  id: 'rent-101',
-  title: 'Excavator Rental: Acme Corp',
-  type: 'rental',
-  status: 'Active',
-  start: new Date(2026, 3, 10, 8, 0),
-  end: new Date(2026, 3, 15, 17, 0),
-  customer: {
-    name: 'Jane Doe',
-    company: 'Acme Construction',
-    avatar: 'https://i.pravatar.cc/150?u=jane',
-    extraFields: [
-      { label: 'License ID', value: 'DL-99201-B' }
-    ]
-  },
-  asset: {
-    name: 'CAT 320 Excavator',
-    id: 'EQ-442',
-    extraFields: [
-      { label: 'Plate', value: 'TX-99-LR' }
-    ]
-  }
-};
-```
-
-### 2. Maintenance & Inspection
-Use this for equipment checkups and internal logs.
-
-```tsx
-const maintenanceEvent: CalendarEvent = {
-  id: 'maint-202',
-  title: 'Forklift Quarterly Inspection',
-  type: 'maintenance',
-  color: '#f43f5e', // Rose 500
-  start: new Date(2026, 3, 12, 10, 0),
-  end: new Date(2026, 3, 12, 12, 0),
-  asset: {
-     name: 'Toyota 8-Series Forklift',
-     id: 'FL-001'
-  },
-  extraGroups: [
-    {
-      title: 'Technical Specs',
-      color: 'rose',
-      fields: [
-        { label: 'Battery Health', value: '94%', size: 'large' },
-        { label: 'Hydraulic Pressure', value: 'Normal', size: 'small' }
-      ]
-    }
-  ],
-  notes: 'Check for any leaks in the main hydraulic line.'
-};
-```
-
-### 3. Fully Customized Flex Layout
-When you need to reorder everything for a tailored dashboard experience.
-
-```tsx
-const vipEvent: CalendarEvent = {
-  id: 'vip-303',
-  title: 'Premium VIP Car Service',
-  start: new Date(2026, 3, 14, 14, 0),
-  end: new Date(2026, 3, 14, 18, 0),
-  displayGroups: [
-    {
-      title: 'Priority Client',
-      color: 'indigo',
-      icon: <UserIcon />, 
-      fields: [
-        { value: 'Sarah Williams', size: 'large' },
-        { label: 'VIP Tier', value: 'Platinum Member', icon: '⭐' }
-      ]
-    },
-    {
-      title: 'Vehicle Details',
-      color: 'zinc',
-      fields: [
-        { value: 'Mercedes-Benz S-Class', size: 'large' },
-        { label: 'Chauffeur', value: 'Michael Brown', size: 'small' }
-      ]
-    }
-  ]
-};
-```
-
-### 4. Working with JSON / API Data
-JSON data doesn't support React components (SVGs, icons) directly. Here's how to map your API results to rich calendar events.
-
-```tsx
-// 1. Your raw JSON from the server
-const apiResponse = [
-  {
-    id: 'api-1',
-    title: 'Client Delivery',
-    start_iso: '2026-04-10T10:00:00Z',
-    end_iso: '2026-04-10T12:00:00Z',
-    customer_name: 'John Doe',
-    custom_icon_key: 'truck' // A string identifier
-  }
-];
-
-// 2. Map the JSON to the rich CalendarEvent structure
+// Map your JSON result to the rich CalendarEvent structure
 const events: CalendarEvent[] = apiResponse.map(item => ({
   id: item.id,
   title: item.title,
@@ -311,30 +186,36 @@ const events: CalendarEvent[] = apiResponse.map(item => ({
     {
       title: 'Logistics',
       color: 'blue',
-      // Resolve the string key to a React component or image URL
-      icon: item.custom_icon_key === 'truck' ? <TruckIcon /> : <DefaultIcon />,
-      fields: [
-        { label: 'Driver', value: item.customer_name, size: 'large' }
-      ]
+      // Resolve the string icon key from API to a React component
+      icon: item.icon_key === 'truck' ? <TruckIcon /> : <DefaultIcon />,
+      fields: [{ label: 'Driver', value: item.driver_name, size: 'large' }]
     }
   ]
 }));
-
-// 3. Automatic Metadata Mapper (Quick extension)
-// Turn any flat JSON object into extraFields automatically
-const rawMetadata = { "License": "DL-123", "Verified": "Yes" };
-const autoFields = Object.entries(rawMetadata).map(([label, value]) => ({
-  label,
-  value
-}));
 ```
+
+---
+
+## Props Reference
+
+| Prop | Type | Default | Description |
+|---|---|---|---|
+| `events` | `CalendarEvent[]` | `[]` | List of event objects |
+| `theme` | `'light' \| 'dark'` | `'light'` | Toggle visual theme |
+| `view` | `'month' \| 'week'` | `'month'` | Active calendar view |
+| `onViewChange` | `(view: string) => void` | `undefined` | Callback when view type changes |
+| `monthlyCalendar` | `{ dayHeight?: number }` | - | Month-specific settings |
+| `weeklyCalendar` | `{ startHour, endHour, dayHeight }` | - | Week-specific settings |
+| `renderEvent` | `(event: CalendarEvent) => ReactNode` | `undefined` | Custom event card override |
+
+---
 
 ## Features
 
-- **Blazing Fast**: Designed with internal dictionary lookups, keeping renders O(N) instead of O(N * 35). Handles tens of thousands of calendar elements without locking up the UI.
-- **Dynamic Animations**: Includes beautifully crafted cylinder rolling date transitions when navigating left/right.
-- **Smart Stacking**: Event chips automatically expand intelligently, and clusters flip directions when near the bottom of the screen to remain visible.
-- **Built-in Modals**: Includes out-of-the-box modals for clicking on entire days, or clicking on specific events to view extended customer, location, and metadata details.
+- **Blazing Fast**: O(N) rendering logic handles tens of thousands of elements without lag.
+- **Dynamic Animations**: Cylinder rolling date transitions and fluid modal entries.
+- **Smart Stacking**: Event chips automatically expand and flip directions to remain visible.
+- **Tailwind Ready**: Fully styled with Tailwind utility classes for easy integration.
 
 ## License
 MIT
