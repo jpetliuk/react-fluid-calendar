@@ -15,23 +15,63 @@ export interface CalendarEvent {
         contact?: string; // email
         phone?: string;
         avatar?: string; // image URL
+        extraFields?: DisplayField[];
     };
     asset?: {
         name: string;
         licensePlate?: string;
         id?: string;
         contract?: string;
+        extraFields?: DisplayField[];
     };
     details?: {
         name: string;
+        extraFields?: DisplayField[];
     };
     status?: string;
     location?: string;
     notes?: string;
     orderLink?: string;
 
+    /**
+     * Highly flexible display configuration for the event modal.
+     * If provided, these groups will be rendered instead of the default layout.
+     */
+    displayGroups?: DisplayGroup[];
+
+    /**
+     * Extra custom groups to be appended to the standard layout.
+     * Use this if you want to keep the default sections (Customer, Asset, etc.)
+     * but add additional categorized information.
+     */
+    extraGroups?: DisplayGroup[];
+
     [key: string]: unknown;
 }
+
+/**
+ * A highly flexible display field for the event modal.
+ * Can be used to show IDs, license plates, contact info, etc.
+ */
+export interface DisplayField {
+    label?: string;
+    value: React.ReactNode;
+    icon?: React.ReactNode; // Optional small icon next to the value
+    size?: 'small' | 'large'; // 'large' is roughly text-sm bold, 'small' is text-xs
+}
+
+/**
+ * A group of fields to be displayed in the event modal.
+ * Includes a section title and optional icon theme.
+ */
+export interface DisplayGroup {
+    title?: string;
+    icon?: React.ReactNode;
+    fields: DisplayField[];
+    /** Theme color for the group icon background (e.g. 'blue', 'indigo', 'amber' or a hex code) */
+    color?: string;
+}
+
 
 export type ViewMode = 'month' | 'week';
 

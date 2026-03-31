@@ -43,11 +43,107 @@ export default function App() {
 }
 ```
 
-## Customizing Events
+## Advanced Event Detail UI
 
-The `CalendarEvent` type accepts additional optional properties, making it great for specialized scheduling architectures like rental businesses or fleet management. 
+The `react-fluid-calendar` now features a highly flexible dynamic rendering system for event details. You can choose to extend our built-in categories or completely redefine the modal's layout.
 
-Custom `color` properties will be applied automatically to the event cards.
+### Option 1: Extend Built-in Categories with `extraFields`
+Add custom fields (like "Driving License" or "VIN") to predefined sections.
+
+```tsx
+const event: CalendarEvent = {
+  customer: {
+    name: 'Robert Fox',
+    extraFields: [
+      { label: 'Driving License', value: 'DL-99201-B', icon: <LicenseIcon /> }
+    ]
+  },
+  asset: {
+    name: 'Heavy Duty Trailer',
+    extraFields: [
+       { label: 'Last Inspection', value: 'March 15, 2026' }
+    ]
+  }
+};
+```
+
+### Option 2: Add Custom Categories with `extraGroups`
+Add entirely new sections alongside the standard categories.
+
+```tsx
+const event: CalendarEvent = {
+  extraGroups: [
+    {
+      title: 'Regional Info',
+      color: 'emerald',
+      fields: [
+        { label: 'Country', value: 'Germany', icon: '🇩🇪' },
+        { label: 'Timezone', value: 'CET (UTC+1)' }
+      ]
+    }
+  ]
+};
+```
+
+### Option 3: Completely Custom Layout with `displayGroups`
+If `displayGroups` is provided, the modal layout is completely replaced with your custom-ordered sections, supporting custom colors and icons.
+
+```tsx
+const event: CalendarEvent = {
+  displayGroups: [
+    {
+      title: 'Business Client',
+      color: 'indigo', // indigo, blue, amber, rose, emerald, zinc, or hex #XXXXXX
+      icon: 'https://avatar-url.com/sarah.png',
+      fields: [
+        { value: 'Sarah Williams', size: 'large' },
+        { label: 'Organization', value: 'Global Logistics' },
+        { value: '+1 (555) 777-8888', icon: <PhoneIcon /> }
+      ]
+    }
+  ]
+};
+```
+
+### High-Density Enterprise Example
+You can mix text sizes, direct Hex codes, and even animated React components as icons to create professional interfaces:
+
+```tsx
+const event: CalendarEvent = {
+  title: 'Enterprise Rental: VIP Fleet',
+  extraGroups: [
+    {
+      title: 'Rental Policy',
+      color: '#4f46e5', // Direct Hex support
+      icon: <PolicyIcon />,
+      fields: [
+        { label: 'Insurance', value: 'Full Comprehensive', size: 'large' },
+        { label: 'Mileage Limit', value: 'Unlimited', icon: '∞', size: 'small' }
+      ]
+    },
+    {
+      title: 'Technical Compliance',
+      color: '#ec4899',
+      icon: <ShieldIcon />,
+      fields: [
+        { label: 'Telematics ID', value: 'T-800-CH-01', size: 'small' },
+        {
+          label: 'Verification Status',
+          value: 'Cloud Verified',
+          size: 'large',
+          icon: <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+        }
+      ]
+    }
+  ]
+}
+```
+
+---
+
+## Technical Details
+
+The `CalendarEvent` type is highly extensible:
 
 ```tsx
 export interface CalendarEvent {
@@ -64,27 +160,39 @@ export interface CalendarEvent {
         name: string;
         company?: string;
         contact?: string; // Email address
-        phone?: string;   // Phone number now displays with icon
+        phone?: string;   // Phone number
         avatar?: string;  // Image URL for profile logo/icon
+        extraFields?: DisplayField[]; // Add custom labels here
     };
     asset?: {
         name: string;
         licensePlate?: string;
+        contract?: string;
         id?: string;
-        contract?: string; // Displays as a reference in the modal
+        extraFields?: DisplayField[]; // Add custom labels here
     };
     details?: {
-        name: string; // Displays as a main Reference Detail section
+       name: string;
+       extraFields?: DisplayField[]; // Add custom labels here
     };
-    location?: string;
-    notes?: string;
-    orderLink?: string; // Displays as a "View Full Order" button
 
-    [key: string]: any; // Store any additional metadata you want!
+    displayGroups?: DisplayGroup[]; // Replace whole UI with custom groups
+}
+
+export interface DisplayField {
+    label?: string;
+    value: React.ReactNode;
+    icon?: React.ReactNode; 
+    size?: 'small' | 'large'; 
+}
+
+export interface DisplayGroup {
+    title?: string;
+    icon?: React.ReactNode;
+    fields: DisplayField[];
+    color?: string; // blue, indigo, amber, rose, emerald, zinc, or hex #XXXXXX
 }
 ```
-
-The event detail modal has been updated with a cleaner, premium integrated layout that highlights Customer Profiles, Assigned Units, and Order References with consistent icons and typography.
 
 
 ## Features
