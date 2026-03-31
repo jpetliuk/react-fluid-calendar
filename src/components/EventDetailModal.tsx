@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { format, isSameMinute, startOfDay } from 'date-fns';
 import { cn } from '../utils/theme';
-import type { CalendarEvent } from '../types';
+import type { CalendarEvent, DisplayField } from '../types';
 
 interface EventDetailModalProps {
     event: CalendarEvent;
@@ -38,6 +38,48 @@ function formatEventTime(start: Date, end: Date): string {
     if (allDay) return 'All day';
     return `${format(start, 'h:mm a')} – ${format(end, 'h:mm a')}`;
 }
+
+const renderField = (field: DisplayField, fIdx: number) => {
+    const showLabel = field.label && !field.hideLabel;
+    const isSubtle = field.size === 'subtle';
+    const isLarge = field.size === 'large';
+    const hasIcon = !!field.icon;
+
+    return (
+        <div key={fIdx} className="group/field">
+            {showLabel && (
+                <h4 className="text-[9px] font-bold text-zinc-400/80 dark:text-zinc-500/80 uppercase tracking-tight mb-0.5">
+                    {field.label}
+                </h4>
+            )}
+            <div className={cn(
+                "flex items-center gap-1.5 min-w-0 transition-colors",
+                isSubtle ? "text-zinc-400 dark:text-zinc-500" : "text-zinc-500 dark:text-zinc-400"
+            )}>
+                {field.icon && (
+                    <span className={cn(
+                        "shrink-0 flex items-center justify-center transition-transform group-hover/field:scale-110",
+                        isLarge ? "w-4 h-4" : "w-3.5 h-3.5",
+                        isSubtle ? "text-zinc-300 dark:text-zinc-600" : "text-zinc-400 dark:text-zinc-500"
+                    )}>
+                        {field.icon}
+                    </span>
+                )}
+                <div className={cn(
+                    "truncate",
+                    isLarge 
+                        ? "text-sm font-semibold text-zinc-900 dark:text-zinc-100" 
+                        : cn(
+                            "text-xs",
+                            (hasIcon || showLabel || isSubtle) ? "font-medium" : ""
+                        )
+                )}>
+                    {field.value}
+                </div>
+            </div>
+        </div>
+    );
+};
 
 export const EventDetailModal: React.FC<EventDetailModalProps> = ({
     event,
@@ -166,33 +208,7 @@ export const EventDetailModal: React.FC<EventDetailModalProps> = ({
                                                      </h3>
                                                  )}
                                                  <div className="space-y-1.5">
-                                                     {group.fields.map((field, fIdx) => (
-                                                         <div key={fIdx}>
-                                                             {field.label && (
-                                                                 <h4 className="text-[9px] font-bold text-zinc-400/80 dark:text-zinc-500/80 uppercase tracking-tight mb-0.5">
-                                                                     {field.label}
-                                                                 </h4>
-                                                             )}
-                                                             <div className="flex items-center gap-1.5 min-w-0">
-                                                                 {field.icon && (
-                                                                     <span className={cn(
-                                                                         "shrink-0 flex items-center justify-center",
-                                                                         field.size === 'large' ? "text-zinc-500 w-4 h-4" : "text-zinc-400 w-3.5 h-3.5"
-                                                                     )}>
-                                                                         {field.icon}
-                                                                     </span>
-                                                                 )}
-                                                                 <div className={cn(
-                                                                     "truncate",
-                                                                     field.size === 'large' 
-                                                                         ? "text-sm font-semibold text-zinc-900 dark:text-zinc-100" 
-                                                                         : "text-xs text-zinc-500 dark:text-zinc-400"
-                                                                 )}>
-                                                                     {field.value}
-                                                                 </div>
-                                                             </div>
-                                                         </div>
-                                                     ))}
+                                                     {group.fields.map((field, fIdx) => renderField(field, fIdx))}
                                                  </div>
                                              </div>
                                          </div>
@@ -210,19 +226,13 @@ export const EventDetailModal: React.FC<EventDetailModalProps> = ({
                                                      <h3 className="text-[10px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest mb-0.5">Order Info</h3>
                                                      <div className="text-sm font-semibold text-zinc-900 dark:text-zinc-100 truncate">{event.details.name}</div>
                                                      <div className="text-xs text-zinc-500 dark:text-zinc-400">Order Reference</div>
-                                                     {event.details.extraFields?.map((field, fIdx) => (
-                                                         <div key={fIdx} className="mt-1.5">
-                                                             {field.label && <h4 className="text-[9px] font-bold text-zinc-400/80 uppercase tracking-tight mb-0.5">{field.label}</h4>}
-                                                             <div className="flex items-center gap-1.5 text-xs text-zinc-500 dark:text-zinc-400">{field.icon} {field.value}</div>
-                                                         </div>
-                                                     ))}
+                                                     {event.details.extraFields?.map((field, fIdx) => renderField(field, fIdx))}
                                                  </div>
                                              </div>
                                          )}
 
                                          {event.customer && (
                                              <div className="flex items-start gap-4 pt-1">
-                                                 {/* Customer Logo/Avatar */}
                                                  <div className="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-900/40 flex items-center justify-center shrink-0 border border-indigo-100 dark:border-indigo-800 overflow-hidden">
                                                      {event.customer.avatar ? (
                                                          <img src={event.customer.avatar} alt={event.customer.name} className="w-full h-full object-cover" />
@@ -234,39 +244,23 @@ export const EventDetailModal: React.FC<EventDetailModalProps> = ({
                                                  </div>
                                                  <div className="flex-1 min-w-0 pt-0.5">
                                                      <h3 className="text-[10px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest mb-0.5">Customer Profile</h3>
-                                                     <div className="flex items-center gap-2 mb-0.5">
-                                                         <div className="text-sm font-semibold text-zinc-900 dark:text-zinc-100 truncate">{event.customer.name}</div>
+                                                     <div className="text-sm font-semibold text-zinc-900 dark:text-zinc-100 truncate">{event.customer.name}</div>
+                                                     {event.customer.company && <div className="text-xs text-zinc-500 dark:text-zinc-400">{event.customer.company}</div>}
+                                                     
+                                                     <div className="mt-2 space-y-1.5">
+                                                         {/* Special backward compatibility for legacy phone/contact fields */}
+                                                         {event.customer.contact && renderField({ 
+                                                             value: event.customer.contact, 
+                                                             size: 'subtle', 
+                                                             icon: <svg className="w-full h-full" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg> 
+                                                         }, 998)}
+                                                         {event.customer.phone && renderField({ 
+                                                             value: event.customer.phone, 
+                                                             size: 'subtle', 
+                                                             icon: <svg className="w-full h-full" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" /></svg> 
+                                                         }, 999)}
+                                                         {event.customer.extraFields?.map((field, fIdx) => renderField(field, fIdx))}
                                                      </div>
-                                                     {event.customer.company && (
-                                                         <div className="text-xs text-zinc-500 dark:text-zinc-400">{event.customer.company}</div>
-                                                     )}
-
-                                                     {(event.customer.contact || event.customer.phone || event.customer.extraFields) && (
-                                                         <div className="mt-2 space-y-1.5">
-                                                             {event.customer.contact && (
-                                                                 <div className="flex items-center gap-1.5 text-zinc-400 dark:text-zinc-500">
-                                                                     <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                                                         <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                                                                     </svg>
-                                                                     <span className="text-xs font-medium">{event.customer.contact}</span>
-                                                                 </div>
-                                                             )}
-                                                             {event.customer.phone && (
-                                                                 <div className="flex items-center gap-1.5 text-zinc-400 dark:text-zinc-500">
-                                                                     <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                                                                         <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" />
-                                                                     </svg>
-                                                                     <span className="text-xs font-medium">{event.customer.phone}</span>
-                                                                 </div>
-                                                             )}
-                                                             {event.customer.extraFields?.map((field, fIdx) => (
-                                                                 <div key={fIdx} className="flex flex-col">
-                                                                     {field.label && <h4 className="text-[9px] font-bold text-zinc-400/80 uppercase tracking-tight mb-0.5">{field.label}</h4>}
-                                                                     <div className="flex items-center gap-1.5 text-xs text-zinc-500 dark:text-zinc-400 font-medium">{field.icon} {field.value}</div>
-                                                                 </div>
-                                                             ))}
-                                                         </div>
-                                                     )}
                                                  </div>
                                              </div>
                                          )}
@@ -281,15 +275,8 @@ export const EventDetailModal: React.FC<EventDetailModalProps> = ({
                                                  <div className="flex-1 min-w-0 pt-0.5">
                                                      <h3 className="text-[10px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest mb-0.5">Assigned Unit</h3>
                                                      <div className="text-sm font-semibold text-zinc-900 dark:text-zinc-100 truncate">{event.asset.name}</div>
-                                                     {event.asset.id && (
-                                                         <div className="text-[10px] text-zinc-400 dark:text-zinc-500">ID: {event.asset.id}</div>
-                                                     )}
-                                                     {event.asset.extraFields?.map((field, fIdx) => (
-                                                         <div key={fIdx} className="mt-1">
-                                                             {field.label && <h4 className="text-[9px] font-bold text-zinc-400/80 uppercase tracking-tight mb-0.5">{field.label}</h4>}
-                                                             <div className="flex items-center gap-1.5 text-xs text-zinc-500 dark:text-zinc-400 font-medium">{field.icon} {field.value}</div>
-                                                         </div>
-                                                     ))}
+                                                     {event.asset.id && <div className="text-[10px] text-zinc-400 dark:text-zinc-500">ID: {event.asset.id}</div>}
+                                                     {event.asset.extraFields?.map((field, fIdx) => renderField(field, fIdx))}
                                                  </div>
                                              </div>
                                          )}
@@ -326,33 +313,7 @@ export const EventDetailModal: React.FC<EventDetailModalProps> = ({
                                                          </h3>
                                                      )}
                                                      <div className="space-y-1.5">
-                                                         {group.fields.map((field, fIdx) => (
-                                                             <div key={fIdx}>
-                                                                 {field.label && (
-                                                                     <h4 className="text-[9px] font-bold text-zinc-400/80 dark:text-zinc-500/80 uppercase tracking-tight mb-0.5">
-                                                                         {field.label}
-                                                                     </h4>
-                                                                 )}
-                                                                 <div className="flex items-center gap-1.5 min-w-0">
-                                                                     {field.icon && (
-                                                                         <span className={cn(
-                                                                             "shrink-0 flex items-center justify-center",
-                                                                             field.size === 'large' ? "text-zinc-500 w-4 h-4" : "text-zinc-400 w-3.5 h-3.5"
-                                                                         )}>
-                                                                             {field.icon}
-                                                                         </span>
-                                                                     )}
-                                                                     <div className={cn(
-                                                                         "truncate",
-                                                                         field.size === 'large' 
-                                                                             ? "text-sm font-semibold text-zinc-900 dark:text-zinc-100" 
-                                                                             : "text-xs text-zinc-500 dark:text-zinc-400"
-                                                                     )}>
-                                                                         {field.value}
-                                                                     </div>
-                                                                 </div>
-                                                             </div>
-                                                         ))}
+                                                         {group.fields.map((field, fIdx) => renderField(field, fIdx))}
                                                      </div>
                                                  </div>
                                              </div>

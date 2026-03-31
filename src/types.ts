@@ -53,9 +53,10 @@ export interface CalendarEvent {
  */
 export interface DisplayField {
     label?: string;
+    hideLabel?: boolean;
     value: React.ReactNode;
     icon?: React.ReactNode; // Optional small icon next to the value
-    size?: 'small' | 'large'; // 'large' is roughly text-sm bold, 'small' is text-xs
+    size?: 'small' | 'large' | 'subtle'; // 'large' is roughly text-sm bold, 'small' is text-xs, 'subtle' is the phone style (zinc-400)
 }
 
 /**

@@ -43,7 +43,9 @@ const events: CalendarEvent[] = [
         customer: {
             name: 'Extra Field User',
             extraFields: [
-                { label: 'License', value: 'ABC-123', icon: '🪪' }
+                { label: 'License', value: 'ABC-123', icon: '🪪' },
+                { label: 'Company Name', value: 'Custom Hidden Label Co', hideLabel: true },
+                { value: '+1 (555) 999-8888', icon: '💬', size: 'subtle' } // Replicating phone style with chat icon
             ]
         },
         asset: {

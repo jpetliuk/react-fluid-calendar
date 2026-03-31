@@ -155,13 +155,20 @@ const event: CalendarEvent = {
       icon: 'https://avatar-url.com/sarah.png',
       fields: [
         { value: 'Sarah Williams', size: 'large' },
-        { label: 'Organization', value: 'Global Logistics' },
-        { value: '+1 (555) 777-8888', icon: <PhoneIcon /> }
+        { label: 'Organization', value: 'Global Logistics', hideLabel: true }, // Label is hidden visually
+        { value: '+1 (555) 777-8888', icon: <PhoneIcon />, size: 'subtle' } // Matches phone style
       ]
     }
   ]
 };
 ```
+
+### Advanced Field Customization
+Control how individual fields appear with `size` and `hideLabel`:
+
+*   **`size: 'large'`**: Bold, primary information (e.g. Name, ID).
+*   **`size: 'subtle'`**: Sophisticated zinc-colored info with medium weight (perfect for replicating the phone/email style).
+*   **`hideLabel: true`**: Keep the label in your data model but hide it from the UI (useful for simple values like "Acme Corp").
 
 ### High-Density Enterprise Example
 Mix text sizes, direct Hex codes, and animated React components as icons:
@@ -176,7 +183,7 @@ const event: CalendarEvent = {
       icon: <PolicyIcon />,
       fields: [
         { label: 'Insurance', value: 'Full Comprehensive', size: 'large' },
-        { label: 'Mileage Limit', value: 'Unlimited', icon: '∞', size: 'small' }
+        { label: 'Mileage Limit', value: 'Unlimited', icon: '∞', size: 'subtle' } // Refined subtle style
       ]
     },
     {
