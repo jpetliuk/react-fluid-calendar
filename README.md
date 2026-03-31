@@ -10,7 +10,31 @@ A fluid, modern, and highly-customizable React calendar component designed for f
 npm install react-fluid-calendar
 ```
 
-Note: This component expects TailwindCSS to be configured in your project for styling. Ensure `react-fluid-calendar` is added to your content paths if necessary.
+## Prerequisites
+
+To maintain its fluid performance and tiny bundle size, `react-fluid-calendar` relies on your project's existing environment:
+
+*   **React**: Version 18.0 or 19.0+
+*   **Tailwind CSS**: Designed for Tailwind v3 or v4.
+*   **PostCSS**: Used for processing the component's internal styles.
+
+### Tailwind Configuration
+Since this component uses Tailwind utility classes for its styling, you **must** include the package in your Tailwind `content` paths to ensure all styles are correctly generated:
+
+```ts
+// tailwind.config.ts / tailwind.config.js
+export default {
+  content: [
+    "./index.html",
+    "./src/**/*.{js,ts,jsx,tsx}",
+    "./node_modules/react-fluid-calendar/dist/*.js", // Add this line!
+  ],
+  theme: {
+    extend: {},
+  },
+  plugins: [],
+}
+```
 
 ## Quick Start
 
