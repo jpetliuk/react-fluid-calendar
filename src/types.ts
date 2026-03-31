@@ -18,7 +18,12 @@ export interface CalendarEvent {
         name: string;
         licensePlate?: string;
         id?: string;
+        contract?: string;
     };
+    details?: {
+        name: string;
+    };
+    status?: string;
     location?: string;
     notes?: string;
     orderLink?: string;

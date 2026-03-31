@@ -186,7 +186,7 @@ export const MonthCalendar: React.FC<MonthCalendarProps> = ({
                                                     ? 'bg-rose-50 border-rose-100 text-rose-700 dark:bg-rose-900/30 dark:border-rose-800 dark:text-rose-300'
                                                     : 'bg-indigo-50 border-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:border-indigo-800 dark:text-indigo-300')
                                             )}
-                                            style={event.color ? { backgroundColor: `${event.color}15`, color: event.color, borderColor: `${event.color}30` } : undefined}
+                                            style={event.color ? { backgroundColor: event.color, color: '#ffffff', borderColor: event.color } : undefined}
                                         >
                                             {event.title}
                                         </div>

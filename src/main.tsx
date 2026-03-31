@@ -54,6 +54,25 @@ const events: CalendarEvent[] = [
         end: new Date(currentYear, currentMonth, startDay + 4, 22, 0),
         color: '#10b981', // Emerald green
         notes: 'Holiday party for all staff. Food will be provided!'
+    },
+    {
+        id: 'evt-5',
+        title: 'Rental: Pickup Ref #90',
+        type: 'rental',
+        start: new Date(currentYear, currentMonth, startDay + 1, 13, 0),
+        end: new Date(currentYear, currentMonth, startDay + 1, 16, 0),
+        status: 'Active',
+        details: {
+            name: 'Contract 0x82f'
+        },
+        asset: {
+            name: 'Truck T-45',
+            contract: 'Contract 0x82f'
+        },
+        customer: {
+            name: 'Mike Smith',
+            company: 'Smith & Co'
+        }
     }
 ];
 

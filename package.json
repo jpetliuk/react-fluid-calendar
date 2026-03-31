@@ -4,7 +4,7 @@
   "author": "Hannah Farrell",
   "license": "MIT",
   "private": false,
-  "version": "0.1.4",
+  "version": "0.1.6",
   "keywords": [
     "react",
     "calendar",
@@ -24,7 +24,7 @@
       "import": "./dist/react-fluid-calendar.es.js",
       "require": "./dist/react-fluid-calendar.umd.js"
     },
-    "./dist/style.css": "./dist/style.css"
+    "./dist/style.css": "./dist/react-fluid-calendar.css"
   },
   "type": "module",
   "scripts": {

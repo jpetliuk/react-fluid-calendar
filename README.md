@@ -57,6 +57,7 @@ export interface CalendarEvent {
     end: Date;
     color?: string; // Automatically styles the backgrounds/borders
     type?: 'rental' | 'maintenance' | string;
+    status?: string; // Now displays as a badge in the event modal
     
     // Optional Extended fields ready out-of-the-box
     customer?: {
@@ -68,6 +69,10 @@ export interface CalendarEvent {
         name: string;
         licensePlate?: string;
         id?: string;
+        contract?: string; // Displays as a reference in the modal
+    };
+    details?: {
+        name: string; // Displays as a main Reference Detail section
     };
     location?: string;
     notes?: string;

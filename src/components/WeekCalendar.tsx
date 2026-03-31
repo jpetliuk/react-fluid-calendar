@@ -389,7 +389,7 @@ export const WeekCalendar: React.FC<WeekCalendarProps> = ({
                                                             )}
                                                             style={{
                                                                 ...style,
-                                                                ...(event.color ? { backgroundColor: `${event.color}15`, color: event.color, borderColor: `${event.color}30` } : {})
+                                                                ...(event.color ? { backgroundColor: event.color, color: '#ffffff', borderColor: event.color } : {})
                                                             }}
                                                             onMouseEnter={() => handleClusterEnter(clusterId, cluster)}
                                                             onMouseLeave={handleClusterLeave}
