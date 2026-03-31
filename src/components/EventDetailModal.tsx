@@ -224,7 +224,18 @@ export const EventDetailModal: React.FC<EventDetailModalProps> = ({
                                                  </div>
                                                  <div className="flex-1 min-w-0 pt-0.5">
                                                      <h3 className="text-[10px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest mb-0.5">Order Info</h3>
-                                                     <div className="text-sm font-semibold text-zinc-900 dark:text-zinc-100 truncate">{event.details.name}</div>
+                                                     {event.details.link ? (
+                                                         <a 
+                                                             href={event.details.link} 
+                                                             target="_blank" 
+                                                             rel="noopener noreferrer"
+                                                             className="text-sm font-semibold text-zinc-900 dark:text-zinc-100 hover:text-indigo-600 dark:hover:text-indigo-400 hover:underline truncate block transition-colors"
+                                                         >
+                                                             {event.details.name}
+                                                         </a>
+                                                     ) : (
+                                                         <div className="text-sm font-semibold text-zinc-900 dark:text-zinc-100 truncate">{event.details.name}</div>
+                                                     )}
                                                      <div className="text-xs text-zinc-500 dark:text-zinc-400">Order Reference</div>
                                                      {event.details.extraFields?.map((field, fIdx) => renderField(field, fIdx))}
                                                  </div>
@@ -244,7 +255,18 @@ export const EventDetailModal: React.FC<EventDetailModalProps> = ({
                                                  </div>
                                                  <div className="flex-1 min-w-0 pt-0.5">
                                                      <h3 className="text-[10px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest mb-0.5">Customer Profile</h3>
-                                                     <div className="text-sm font-semibold text-zinc-900 dark:text-zinc-100 truncate">{event.customer.name}</div>
+                                                     {event.customer.link ? (
+                                                         <a 
+                                                             href={event.customer.link} 
+                                                             target="_blank" 
+                                                             rel="noopener noreferrer"
+                                                             className="text-sm font-semibold text-zinc-900 dark:text-zinc-100 hover:text-indigo-600 dark:hover:text-indigo-400 hover:underline truncate block transition-colors"
+                                                         >
+                                                             {event.customer.name}
+                                                         </a>
+                                                     ) : (
+                                                         <div className="text-sm font-semibold text-zinc-900 dark:text-zinc-100 truncate">{event.customer.name}</div>
+                                                     )}
                                                      {event.customer.company && <div className="text-xs text-zinc-500 dark:text-zinc-400">{event.customer.company}</div>}
                                                      
                                                      <div className="mt-2 space-y-1.5">
@@ -274,7 +296,18 @@ export const EventDetailModal: React.FC<EventDetailModalProps> = ({
                                                  </div>
                                                  <div className="flex-1 min-w-0 pt-0.5">
                                                      <h3 className="text-[10px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest mb-0.5">Assigned Unit</h3>
-                                                     <div className="text-sm font-semibold text-zinc-900 dark:text-zinc-100 truncate">{event.asset.name}</div>
+                                                     {event.asset.link ? (
+                                                         <a 
+                                                             href={event.asset.link} 
+                                                             target="_blank" 
+                                                             rel="noopener noreferrer"
+                                                             className="text-sm font-semibold text-zinc-900 dark:text-zinc-100 hover:text-indigo-600 dark:hover:text-indigo-400 hover:underline truncate block transition-colors"
+                                                         >
+                                                             {event.asset.name}
+                                                         </a>
+                                                     ) : (
+                                                         <div className="text-sm font-semibold text-zinc-900 dark:text-zinc-100 truncate">{event.asset.name}</div>
+                                                     )}
                                                      {event.asset.id && <div className="text-[10px] text-zinc-400 dark:text-zinc-500">ID: {event.asset.id}</div>}
                                                      {event.asset.extraFields?.map((field, fIdx) => renderField(field, fIdx))}
                                                  </div>

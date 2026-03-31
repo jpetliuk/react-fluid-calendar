@@ -11,6 +11,7 @@ export interface CalendarEvent {
     // Rental specific fields
     customer?: {
         name: string;
+        link?: string;
         company?: string;
         contact?: string; // email
         phone?: string;
@@ -19,11 +20,13 @@ export interface CalendarEvent {
     };
     asset?: {
         name: string;
+        link?: string;
         id?: string;
         extraFields?: DisplayField[];
     };
     details?: {
         name: string;
+        link?: string;
         extraFields?: DisplayField[];
     };
     status?: string;

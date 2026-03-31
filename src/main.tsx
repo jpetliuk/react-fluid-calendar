@@ -22,15 +22,18 @@ const events: CalendarEvent[] = [
         end: new Date(currentYear, currentMonth, startDay + 1, 12, 0),
         customer: {
             name: 'John Test',
+            link: 'https://example.com/customer/john',
             company: 'Testing Inc',
             phone: '+1 (555) 000-0000',
         },
         asset: {
             name: 'Standard Unit',
+            link: 'https://example.com/asset/unit-001',
             id: 'UNIT-001'
         },
         details: {
-            name: 'CONTRACT-ABC'
+            name: 'CONTRACT-ABC',
+            link: 'https://example.com/order/abc'
         }
     },
     {
