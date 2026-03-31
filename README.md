@@ -1,6 +1,6 @@
 # React Fluid Calendar
 
-![Calendar Demo](./assets/calendar_demo.webp)
+<video src="./assets/demo_video.mov" width="100%" autoplay loop muted></video>
 
 A fluid, modern, and highly-customizable React calendar component designed for flexibility and scale. Features animated transitions, week & month views, custom event rendering, and more.
 
@@ -63,7 +63,9 @@ export interface CalendarEvent {
     customer?: {
         name: string;
         company?: string;
-        contact?: string;
+        contact?: string; // Email address
+        phone?: string;   // Phone number now displays with icon
+        avatar?: string;  // Image URL for profile logo/icon
     };
     asset?: {
         name: string;
@@ -76,11 +78,14 @@ export interface CalendarEvent {
     };
     location?: string;
     notes?: string;
-    orderLink?: string;
+    orderLink?: string; // Displays as a "View Full Order" button
 
     [key: string]: any; // Store any additional metadata you want!
 }
 ```
+
+The event detail modal has been updated with a cleaner, premium integrated layout that highlights Customer Profiles, Assigned Units, and Order References with consistent icons and typography.
+
 
 ## Features
 

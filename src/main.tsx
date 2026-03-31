@@ -105,7 +105,7 @@ const events: CalendarEvent[] = [
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
     <React.StrictMode>
-        <div className="min-h-screen w-full px-8 py-4 bg-zinc-950 flex items-start justify-center">
+        <div className="min-h-screen w-full px-8 py-4 bg-zinc-50 flex items-start justify-center">
             <FluidCalendar
                 events={events}
                 theme="light"
