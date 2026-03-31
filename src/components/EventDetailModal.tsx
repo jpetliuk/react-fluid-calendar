@@ -281,14 +281,8 @@ export const EventDetailModal: React.FC<EventDetailModalProps> = ({
                                                  <div className="flex-1 min-w-0 pt-0.5">
                                                      <h3 className="text-[10px] font-bold text-zinc-400 dark:text-zinc-500 uppercase tracking-widest mb-0.5">Assigned Unit</h3>
                                                      <div className="text-sm font-semibold text-zinc-900 dark:text-zinc-100 truncate">{event.asset.name}</div>
-                                                     {event.asset.licensePlate && (
-                                                         <div className="text-xs text-zinc-500 dark:text-zinc-400 font-medium">Plate: {event.asset.licensePlate}</div>
-                                                     )}
                                                      {event.asset.id && (
                                                          <div className="text-[10px] text-zinc-400 dark:text-zinc-500">ID: {event.asset.id}</div>
-                                                     )}
-                                                     {event.asset.contract && (
-                                                         <div className="text-[10px] text-zinc-400 dark:text-zinc-500">Contract: {event.asset.contract}</div>
                                                      )}
                                                      {event.asset.extraFields?.map((field, fIdx) => (
                                                          <div key={fIdx} className="mt-1">

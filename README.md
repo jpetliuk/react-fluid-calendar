@@ -54,15 +54,15 @@ Add custom fields (like "Driving License" or "VIN") to predefined sections.
 const event: CalendarEvent = {
   customer: {
     name: 'Robert Fox',
-    extraFields: [
-      { label: 'Driving License', value: 'DL-99201-B', icon: <LicenseIcon /> }
-    ]
+    extraFields: [ // [!code highlight]
+      { label: 'Driving License', value: 'DL-99201-B', icon: <LicenseIcon /> } // [!code highlight]
+    ] // [!code highlight]
   },
   asset: {
     name: 'Heavy Duty Trailer',
-    extraFields: [
-       { label: 'Last Inspection', value: 'March 15, 2026' }
-    ]
+    extraFields: [ // [!code highlight]
+       { label: 'Last Inspection', value: 'March 15, 2026' } // [!code highlight]
+    ] // [!code highlight]
   }
 };
 ```
@@ -72,7 +72,7 @@ Add entirely new sections alongside the standard categories.
 
 ```tsx
 const event: CalendarEvent = {
-  extraGroups: [
+  extraGroups: [ // [!code highlight]
     {
       title: 'Regional Info',
       color: 'emerald',
@@ -90,7 +90,7 @@ If `displayGroups` is provided, the modal layout is completely replaced with you
 
 ```tsx
 const event: CalendarEvent = {
-  displayGroups: [
+  displayGroups: [ // [!code highlight]
     {
       title: 'Business Client',
       color: 'indigo', // indigo, blue, amber, rose, emerald, zinc, or hex #XXXXXX
@@ -111,13 +111,13 @@ You can mix text sizes, direct Hex codes, and even animated React components as 
 ```tsx
 const event: CalendarEvent = {
   title: 'Enterprise Rental: VIP Fleet',
-  extraGroups: [
+  extraGroups: [ // [!code highlight]
     {
       title: 'Rental Policy',
       color: '#4f46e5', // Direct Hex support
       icon: <PolicyIcon />,
       fields: [
-        { label: 'Insurance', value: 'Full Comprehensive', size: 'large' },
+        { label: 'Insurance', value: 'Full Comprehensive', size: 'large' }, // [!code highlight]
         { label: 'Mileage Limit', value: 'Unlimited', icon: '∞', size: 'small' }
       ]
     },
@@ -130,8 +130,8 @@ const event: CalendarEvent = {
         {
           label: 'Verification Status',
           value: 'Cloud Verified',
-          size: 'large',
-          icon: <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+          size: 'large', // [!code highlight]
+          icon: <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" /> // [!code highlight]
         }
       ]
     }
@@ -162,31 +162,30 @@ export interface CalendarEvent {
         contact?: string; // Email address
         phone?: string;   // Phone number
         avatar?: string;  // Image URL for profile logo/icon
-        extraFields?: DisplayField[]; // Add custom labels here
+        extraFields?: DisplayField[]; // Add custom labels here // [!code highlight]
     };
     asset?: {
         name: string;
-        licensePlate?: string;
-        contract?: string;
         id?: string;
-        extraFields?: DisplayField[]; // Add custom labels here
+        extraFields?: DisplayField[]; // Add custom labels here (Plate, VIN, etc.) // [!code highlight]
     };
     details?: {
        name: string;
-       extraFields?: DisplayField[]; // Add custom labels here
+       extraFields?: DisplayField[]; // Add custom labels here // [!code highlight]
     };
 
-    displayGroups?: DisplayGroup[]; // Replace whole UI with custom groups
+    displayGroups?: DisplayGroup[]; // Replace whole UI with custom groups // [!code highlight]
+    extraGroups?: DisplayGroup[]; // Append custom categories // [!code highlight]
 }
 
-export interface DisplayField {
+export interface DisplayField { // [!code highlight]
     label?: string;
     value: React.ReactNode;
     icon?: React.ReactNode; 
     size?: 'small' | 'large'; 
 }
 
-export interface DisplayGroup {
+export interface DisplayGroup { // [!code highlight]
     title?: string;
     icon?: React.ReactNode;
     fields: DisplayField[];

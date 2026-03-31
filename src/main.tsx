@@ -177,9 +177,9 @@ const events: CalendarEvent[] = [
         asset: {
             name: 'Heavy Duty Trailer',
             id: 'TRL-009',
-            licensePlate: 'FX-99-LR',
-            contract: 'C-9001-A',
             extraFields: [
+                { label: 'Plate', value: 'FX-99-LR', size: 'small' },
+                { label: 'Contract', value: 'C-9001-A', size: 'small' },
                 {
                     label: 'Last Inspection',
                     value: 'March 15, 2026',
@@ -256,9 +256,9 @@ const events: CalendarEvent[] = [
         },
         asset: {
             name: 'Executive Sprinter Limo',
-            licensePlate: 'VIP-CHEN-1',
-            contract: 'C-88229-B',
             extraFields: [
+                { label: 'Plate', value: 'VIP-CHEN-1', size: 'small' },
+                { label: 'Contract', value: 'C-88229-B', size: 'small' },
                 {
                     label: 'Configuration',
                     value: '12-Seater / Luxury',

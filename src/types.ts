@@ -19,9 +19,7 @@ export interface CalendarEvent {
     };
     asset?: {
         name: string;
-        licensePlate?: string;
         id?: string;
-        contract?: string;
         extraFields?: DisplayField[];
     };
     details?: {
