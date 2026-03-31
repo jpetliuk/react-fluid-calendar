@@ -194,6 +194,141 @@ export interface DisplayGroup {
 ```
 
 
+## Example Usage Patterns
+
+### 1. Standard Rental Log
+Perfect for basic equipment or vehicle rental tracking.
+
+```tsx
+const rentalEvent: CalendarEvent = {
+  id: 'rent-101',
+  title: 'Excavator Rental: Acme Corp',
+  type: 'rental',
+  status: 'Active',
+  start: new Date(2026, 3, 10, 8, 0),
+  end: new Date(2026, 3, 15, 17, 0),
+  customer: {
+    name: 'Jane Doe',
+    company: 'Acme Construction',
+    avatar: 'https://i.pravatar.cc/150?u=jane',
+    extraFields: [
+      { label: 'License ID', value: 'DL-99201-B' }
+    ]
+  },
+  asset: {
+    name: 'CAT 320 Excavator',
+    id: 'EQ-442',
+    extraFields: [
+      { label: 'Plate', value: 'TX-99-LR' }
+    ]
+  }
+};
+```
+
+### 2. Maintenance & Inspection
+Use this for equipment checkups and internal logs.
+
+```tsx
+const maintenanceEvent: CalendarEvent = {
+  id: 'maint-202',
+  title: 'Forklift Quarterly Inspection',
+  type: 'maintenance',
+  color: '#f43f5e', // Rose 500
+  start: new Date(2026, 3, 12, 10, 0),
+  end: new Date(2026, 3, 12, 12, 0),
+  asset: {
+     name: 'Toyota 8-Series Forklift',
+     id: 'FL-001'
+  },
+  extraGroups: [
+    {
+      title: 'Technical Specs',
+      color: 'rose',
+      fields: [
+        { label: 'Battery Health', value: '94%', size: 'large' },
+        { label: 'Hydraulic Pressure', value: 'Normal', size: 'small' }
+      ]
+    }
+  ],
+  notes: 'Check for any leaks in the main hydraulic line.'
+};
+```
+
+### 3. Fully Customized Flex Layout
+When you need to reorder everything for a tailored dashboard experience.
+
+```tsx
+const vipEvent: CalendarEvent = {
+  id: 'vip-303',
+  title: 'Premium VIP Car Service',
+  start: new Date(2026, 3, 14, 14, 0),
+  end: new Date(2026, 3, 14, 18, 0),
+  displayGroups: [
+    {
+      title: 'Priority Client',
+      color: 'indigo',
+      icon: <UserIcon />, 
+      fields: [
+        { value: 'Sarah Williams', size: 'large' },
+        { label: 'VIP Tier', value: 'Platinum Member', icon: '⭐' }
+      ]
+    },
+    {
+      title: 'Vehicle Details',
+      color: 'zinc',
+      fields: [
+        { value: 'Mercedes-Benz S-Class', size: 'large' },
+        { label: 'Chauffeur', value: 'Michael Brown', size: 'small' }
+      ]
+    }
+  ]
+};
+```
+
+### 4. Working with JSON / API Data
+JSON data doesn't support React components (SVGs, icons) directly. Here's how to map your API results to rich calendar events.
+
+```tsx
+// 1. Your raw JSON from the server
+const apiResponse = [
+  {
+    id: 'api-1',
+    title: 'Client Delivery',
+    start_iso: '2026-04-10T10:00:00Z',
+    end_iso: '2026-04-10T12:00:00Z',
+    customer_name: 'John Doe',
+    custom_icon_key: 'truck' // A string identifier
+  }
+];
+
+// 2. Map the JSON to the rich CalendarEvent structure
+const events: CalendarEvent[] = apiResponse.map(item => ({
+  id: item.id,
+  title: item.title,
+  start: new Date(item.start_iso),
+  end: new Date(item.end_iso),
+  extraGroups: [
+    {
+      title: 'Logistics',
+      color: 'blue',
+      // Resolve the string key to a React component or image URL
+      icon: item.custom_icon_key === 'truck' ? <TruckIcon /> : <DefaultIcon />,
+      fields: [
+        { label: 'Driver', value: item.customer_name, size: 'large' }
+      ]
+    }
+  ]
+}));
+
+// 3. Automatic Metadata Mapper (Quick extension)
+// Turn any flat JSON object into extraFields automatically
+const rawMetadata = { "License": "DL-123", "Verified": "Yes" };
+const autoFields = Object.entries(rawMetadata).map(([label, value]) => ({
+  label,
+  value
+}));
+```
+
 ## Features
 
 - **Blazing Fast**: Designed with internal dictionary lookups, keeping renders O(N) instead of O(N * 35). Handles tens of thousands of calendar elements without locking up the UI.

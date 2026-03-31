@@ -12,4 +12,6 @@ export type {
     FluidCalendarProps,
     MonthlyCalendarSettings,
     WeeklyCalendarSettings,
+    DisplayField,
+    DisplayGroup,
 } from './types';
