@@ -41,7 +41,9 @@ const events: CalendarEvent[] = [
         customer: {
             name: 'Jane Doe',
             company: 'Acme Corp',
-            contact: 'jane@acme.com'
+            contact: 'jane@acme.com',
+            phone: '+1 (555) 987-6543',
+            avatar: 'https://i.pravatar.cc/150?u=jane'
         },
         location: 'Main Warehouse',
         orderLink: '/orders/12345'
@@ -71,8 +73,33 @@ const events: CalendarEvent[] = [
         },
         customer: {
             name: 'Mike Smith',
-            company: 'Smith & Co'
+            company: 'Smith & Co',
+            phone: '+1 (555) 012-3456',
+            avatar: 'https://i.pravatar.cc/150?u=mike'
         }
+    },
+    {
+        id: 'evt-6',
+        title: 'Marcos Phips (FL4312)',
+        type: 'rental',
+        status: 'Confirmed',
+        start: new Date(currentYear, currentMonth, startDay + 2, 14, 0),
+        end: new Date(currentYear, currentMonth, startDay + 2, 16, 0),
+        details: {
+            name: 'Contract #432414'
+        },
+        customer: {
+            name: 'Mike Smith',
+            company: 'Smith & Co',
+            contact: 'mike@smith.co',
+            phone: '+1 (555) 012-3456',
+
+        },
+        asset: {
+            name: 'Truck T-45',
+            id: 'T-45'
+        },
+        orderLink: '/orders/432414'
     }
 ];
 

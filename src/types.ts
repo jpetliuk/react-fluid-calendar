@@ -12,7 +12,9 @@ export interface CalendarEvent {
     customer?: {
         name: string;
         company?: string;
-        contact?: string;
+        contact?: string; // email
+        phone?: string;
+        avatar?: string; // image URL
     };
     asset?: {
         name: string;
