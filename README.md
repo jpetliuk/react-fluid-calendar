@@ -50,19 +50,19 @@ The `react-fluid-calendar` now features a highly flexible dynamic rendering syst
 ### Option 1: Extend Built-in Categories with `extraFields`
 Add custom fields (like "Driving License" or "VIN") to predefined sections.
 
-```diff
+```tsx
 const event: CalendarEvent = {
   customer: {
     name: 'Robert Fox',
-+   extraFields: [
-+     { label: 'Driving License', value: 'DL-99201-B', icon: <LicenseIcon /> }
-+   ]
+    extraFields: [
+      { label: 'Driving License', value: 'DL-99201-B', icon: <LicenseIcon /> }
+    ]
   },
   asset: {
     name: 'Heavy Duty Trailer',
-+   extraFields: [
-+      { label: 'Last Inspection', value: 'March 15, 2026' }
-+   ]
+    extraFields: [
+       { label: 'Last Inspection', value: 'March 15, 2026' }
+    ]
   }
 };
 ```
@@ -70,54 +70,54 @@ const event: CalendarEvent = {
 ### Option 2: Add Custom Categories with `extraGroups`
 Add entirely new sections alongside the standard categories.
 
-```diff
+```tsx
 const event: CalendarEvent = {
-+ extraGroups: [ 
-+   {
-+     title: 'Regional Info',
-+     color: 'emerald',
-+     fields: [
-+       { label: 'Country', value: 'Germany', icon: '🇩🇪' },
-+       { label: 'Timezone', value: 'CET (UTC+1)' }
-+     ]
-+   }
-+ ]
+  extraGroups: [
+    {
+      title: 'Regional Info',
+      color: 'emerald',
+      fields: [
+        { label: 'Country', value: 'Germany', icon: '🇩🇪' },
+        { label: 'Timezone', value: 'CET (UTC+1)' }
+      ]
+    }
+  ]
 };
 ```
 
 ### Option 3: Completely Custom Layout with `displayGroups`
 If `displayGroups` is provided, the modal layout is completely replaced with your custom-ordered sections, supporting custom colors and icons.
 
-```diff
+```tsx
 const event: CalendarEvent = {
-+ displayGroups: [
-+   {
-+     title: 'Business Client',
-+     color: 'indigo', // indigo, blue, amber, rose, emerald, zinc, or hex #XXXXXX
-+     icon: 'https://avatar-url.com/sarah.png',
-+     fields: [
-+       { value: 'Sarah Williams', size: 'large' },
-+       { label: 'Organization', value: 'Global Logistics' },
-+       { value: '+1 (555) 777-8888', icon: <PhoneIcon /> }
-+     ]
-+   }
-+ ]
+  displayGroups: [
+    {
+      title: 'Business Client',
+      color: 'indigo', // indigo, blue, amber, rose, emerald, zinc, or hex #XXXXXX
+      icon: 'https://avatar-url.com/sarah.png',
+      fields: [
+        { value: 'Sarah Williams', size: 'large' },
+        { label: 'Organization', value: 'Global Logistics' },
+        { value: '+1 (555) 777-8888', icon: <PhoneIcon /> }
+      ]
+    }
+  ]
 };
 ```
 
 ### High-Density Enterprise Example
 You can mix text sizes, direct Hex codes, and even animated React components as icons to create professional interfaces:
 
-```diff
+```tsx
 const event: CalendarEvent = {
   title: 'Enterprise Rental: VIP Fleet',
-+ extraGroups: [
+  extraGroups: [
     {
       title: 'Rental Policy',
       color: '#4f46e5', // Direct Hex support
       icon: <PolicyIcon />,
       fields: [
-+       { label: 'Insurance', value: 'Full Comprehensive', size: 'large' },
+        { label: 'Insurance', value: 'Full Comprehensive', size: 'large' },
         { label: 'Mileage Limit', value: 'Unlimited', icon: '∞', size: 'small' }
       ]
     },
@@ -130,8 +130,8 @@ const event: CalendarEvent = {
         {
           label: 'Verification Status',
           value: 'Cloud Verified',
-+         size: 'large',
-+         icon: <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+          size: 'large',
+          icon: <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
         }
       ]
     }
@@ -162,20 +162,20 @@ export interface CalendarEvent {
         contact?: string; // Email address
         phone?: string;   // Phone number
         avatar?: string;  // Image URL for profile logo/icon
-        extraFields?: DisplayField[]; // <--- New Feature
+        extraFields?: DisplayField[]; // Add custom labels here
     };
     asset?: {
         name: string;
         id?: string;
-        extraFields?: DisplayField[]; // <--- New Feature
+        extraFields?: DisplayField[]; // Add custom labels here (Plate, VIN, etc.)
     };
     details?: {
        name: string;
-       extraFields?: DisplayField[]; // <--- New Feature
+       extraFields?: DisplayField[]; // Add custom labels here
     };
 
-    displayGroups?: DisplayGroup[];  // <--- Ultimate Control
-    extraGroups?: DisplayGroup[];    // <--- Category Extension
+    displayGroups?: DisplayGroup[]; // Replace whole UI with custom groups
+    extraGroups?: DisplayGroup[]; // Append custom categories
 }
 
 export interface DisplayField {
