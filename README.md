@@ -1,6 +1,6 @@
 # React Fluid Calendar
 
-<video src="./assets/demo_video.mov" width="100%" autoplay loop muted></video>
+![](assets/demo_video.mov)
 
 A fluid, modern, and highly-customizable React calendar component designed for flexibility and scale. Features animated transitions, week & month views, custom event rendering, and more.
 
