@@ -105,6 +105,26 @@ const [view, setView] = useState('month');
 
 The `react-fluid-calendar` features a highly flexible dynamic rendering system for event details. You can choose to extend our built-in categories or completely redefine the modal's layout.
 
+### Clickable Event Links
+Make your core event entities actionable by adding a `link` property. The modal will automatically render the names as interactive links that blend with the ui and highlight smoothly on hover.
+
+```tsx
+const event: CalendarEvent = {
+  customer: {
+    name: 'Robert Fox',
+    link: '/clients/robert-fox', // Makes the customer name clickable
+  },
+  asset: {
+    name: 'Heavy Duty Trailer',
+    link: '/assets/trailer-01', // Makes the asset name clickable
+  },
+  details: {
+    name: 'Order #9921',
+    link: '/orders/9921', // Makes the order name clickable
+  }
+};
+```
+
 ### Option 1: Extend Built-in Categories with `extraFields`
 Add custom fields (like "Driving License" or "VIN") to predefined sections.
 
